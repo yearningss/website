@@ -325,6 +325,129 @@
                 margin-bottom: 20px;
             }
         }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        /* Улучшенные стили для игрового оверлея */
+        .game-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        
+        .game-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 95%;
+            max-width: 1200px;
+            height: 85vh;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .close-game {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        
+        .close-game:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        .fullscreen-btn {
+            position: absolute;
+            top: 15px;
+            right: 65px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        
+        .fullscreen-btn:hover {
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+        
+        .game-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .game-loading h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -381,6 +504,15 @@
                             <div class="project-title">Minecraft Server Manager</div>
                             <p>Инструмент для удобного управления Minecraft серверами с расширенными возможностями администрирования.</p>
                             <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">Открыть проект</a>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-title">Four Nights in Richcraft</div>
+                            <p>Увлекательная игра в стиле хоррор с элементами выживания и крафтинга.</p>
+                            <div class="button-group">
+                                <a href="#" class="btn" onclick="launchGame('FourNightsInRichcraft'); return false;">Играть</a>
+                                <a href="#" class="btn" onclick="downloadGame('FourNightsInRichcraft'); return false;">Скачать игру</a>
+                            </div>
                         </div>
                         
                         <div class="project-card">
@@ -457,6 +589,15 @@
                         </div>
                         
                         <div class="project-card">
+                            <div class="project-title">Four Nights in Richcraft</div>
+                            <p>Exciting horror game with survival and crafting elements.</p>
+                            <div class="button-group">
+                                <a href="#" class="btn" onclick="launchGame('FourNightsInRichcraft'); return false;">Play Game</a>
+                                <a href="#" class="btn" onclick="downloadGame('FourNightsInRichcraft'); return false;">Download Game</a>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
                             <div class="project-title">Test2</div>
                             <p>Test project used for development and experimentation.</p>
                             <a href="https://github.com/yearningss/test2" class="btn" target="_blank">Open Project</a>
@@ -528,6 +669,137 @@
                 
                 // Сохраняем выбор в localStorage
                 localStorage.setItem('preferredLanguage', lang);
+            }
+        });
+        
+        // Улучшенные функции для работы с играми
+        function launchGame(gameName) {
+            // Создаем оверлей для игры, если его нет
+            let overlay = document.getElementById('game-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'game-overlay';
+                overlay.className = 'game-overlay';
+                
+                const gameContainer = document.createElement('div');
+                gameContainer.className = 'game-container';
+                
+                // Добавляем индикатор загрузки
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'game-loading';
+                loadingDiv.innerHTML = `
+                    <h3>Загрузка игры...</h3>
+                    <div class="loading-spinner"></div>
+                `;
+                loadingDiv.id = 'game-loading';
+                
+                const closeBtn = document.createElement('div');
+                closeBtn.className = 'close-game';
+                closeBtn.innerHTML = '×';
+                closeBtn.title = 'Закрыть игру';
+                closeBtn.onclick = closeGame;
+                
+                const fullscreenBtn = document.createElement('div');
+                fullscreenBtn.className = 'fullscreen-btn';
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                fullscreenBtn.title = 'Полный экран';
+                fullscreenBtn.onclick = toggleFullscreen;
+                
+                const iframe = document.createElement('iframe');
+                iframe.id = 'game-frame';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.position = 'relative';
+                iframe.style.zIndex = '1';
+                
+                // Обработчик для скрытия загрузки когда игра загрузилась
+                iframe.onload = function() {
+                    setTimeout(() => {
+                        document.getElementById('game-loading').style.display = 'none';
+                    }, 1000); // Небольшая задержка для плавности
+                };
+                
+                gameContainer.appendChild(loadingDiv);
+                gameContainer.appendChild(iframe);
+                gameContainer.appendChild(closeBtn);
+                gameContainer.appendChild(fullscreenBtn);
+                overlay.appendChild(gameContainer);
+                document.body.appendChild(overlay);
+            } else {
+                // Показываем загрузку при повторном запуске
+                document.getElementById('game-loading').style.display = 'flex';
+            }
+            
+            // Устанавливаем источник для iframe и показываем оверлей
+            const iframe = document.getElementById('game-frame');
+            
+            // Напрямую запускаем из папки games
+            if (gameName === 'FourNightsInRichcraft') {
+                iframe.src = 'games/index.html';
+            } else {
+                iframe.src = `games/${gameName}/index.html`;
+            }
+            
+            // Активируем оверлей
+            overlay.classList.add('active');
+            
+            // Блокируем прокрутку основной страницы
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeGame() {
+            const overlay = document.getElementById('game-overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+                
+                // Останавливаем игру, очищая iframe
+                const iframe = document.getElementById('game-frame');
+                iframe.src = 'about:blank';
+                
+                // Разблокируем прокрутку
+                document.body.style.overflow = '';
+                
+                // Выходим из полноэкранного режима если активен
+                if (document.fullscreenElement) {
+                    document.exitFullscreen().catch(err => console.error(err));
+                }
+            }
+        }
+        
+        function toggleFullscreen() {
+            const gameContainer = document.querySelector('.game-container');
+            
+            if (!document.fullscreenElement) {
+                // Входим в полноэкранный режим
+                if (gameContainer.requestFullscreen) {
+                    gameContainer.requestFullscreen().catch(err => {
+                        alert(`Ошибка: не удалось перейти в полноэкранный режим: ${err.message}`);
+                    });
+                }
+            } else {
+                // Выходим из полноэкранного режима
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+        
+        function downloadGame(gameName) {
+            // Показываем информацию о скачивании
+            if (gameName === 'FourNightsInRichcraft') {
+                alert('Скачивание игры "Four Nights in Richcraft" началось...\nПосле скачивания распакуйте архив и запустите файл index.html в браузере.');
+                // В реальном проекте здесь будет перенаправление на архив с игрой
+                // window.location.href = 'games/FourNightsInRichcraft.zip';
+            } else {
+                alert('Скачивание игры "' + gameName + '" началось...');
+            }
+        }
+        
+        // Обработка клавиши Escape для закрытия игры
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('game-overlay').classList.contains('active')) {
+                closeGame();
             }
         });
     </script>

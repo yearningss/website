@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Проверяем наличие элементов генератора паролей на странице
-    const passwordGenerator = document.getElementById('password-generator');
+    const passwordGenerator = document.getElementById('password-generator-tool');
     if (!passwordGenerator) return;
     
     // Получаем необходимые элементы
@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const symbolsToggle = document.getElementById('symbols-toggle');
     const strengthBars = document.querySelectorAll('.strength-bar');
     const strengthLabel = document.getElementById('strength-label');
+    const modalTitle = document.getElementById('modal-title');
+    
+    // Элементы модального окна
+    const modal = document.getElementById('password-modal');
+    const modalOpenBtns = document.querySelectorAll('.modal-open-btn');
+    const modalClose = document.getElementById('modal-close');
     
     // Набор символов для генерации пароля
     const charSets = {
@@ -24,6 +30,32 @@ document.addEventListener('DOMContentLoaded', function() {
         uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
         numbers: '0123456789',
         symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+    };
+    
+    // Переводы для элементов интерфейса
+    const translations = {
+        ru: {
+            title: 'Генератор паролей',
+            length: 'Длина:',
+            uppercase: 'Заглавные буквы (A-Z)',
+            lowercase: 'Строчные буквы (a-z)',
+            numbers: 'Цифры (0-9)',
+            symbols: 'Специальные символы (!@#$%^&*)',
+            generate: 'Сгенерировать пароль',
+            copy: 'Скопировано!',
+            strengthLabels: ['Очень слабый', 'Слабый', 'Средний', 'Хороший', 'Сильный', 'Очень сильный']
+        },
+        en: {
+            title: 'Password Generator',
+            length: 'Length:',
+            uppercase: 'Uppercase letters (A-Z)',
+            lowercase: 'Lowercase letters (a-z)',
+            numbers: 'Numbers (0-9)',
+            symbols: 'Special characters (!@#$%^&*)',
+            generate: 'Generate Password',
+            copy: 'Copied!',
+            strengthLabels: ['Very weak', 'Weak', 'Medium', 'Good', 'Strong', 'Very strong']
+        }
     };
     
     // Инициализация значений
@@ -37,20 +69,85 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStrengthMeter();
     });
     
+    // Открытие модального окна
+    modalOpenBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const currentLang = localStorage.getItem('preferredLanguage') || 'ru';
+            updateModalLanguage(currentLang);
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Предотвращаем прокрутку страницы
+        });
+    });
+    
+    // Закрытие модального окна
+    modalClose.addEventListener('click', function() {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Возвращаем прокрутку страницы
+    });
+    
+    // Закрытие по клику вне модального окна
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Закрытие по нажатию Esc
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Обновление языка интерфейса модального окна
+    function updateModalLanguage(lang) {
+        const text = translations[lang];
+        modalTitle.textContent = text.title;
+        generateBtn.textContent = text.generate;
+        copyNotification.textContent = text.copy;
+        
+        // Обновляем содержимое других элементов, если необходимо
+        document.querySelector('.password-length span:first-child').textContent = text.length;
+        const labels = document.querySelectorAll('.option-group label');
+        labels[0].innerHTML = `<input type="checkbox" id="uppercase-toggle" ${uppercaseToggle.checked ? 'checked' : ''}> ${text.uppercase}`;
+        labels[1].innerHTML = `<input type="checkbox" id="lowercase-toggle" ${lowercaseToggle.checked ? 'checked' : ''}> ${text.lowercase}`;
+        labels[2].innerHTML = `<input type="checkbox" id="numbers-toggle" ${numbersToggle.checked ? 'checked' : ''}> ${text.numbers}`;
+        labels[3].innerHTML = `<input type="checkbox" id="symbols-toggle" ${symbolsToggle.checked ? 'checked' : ''}> ${text.symbols}`;
+        
+        // После обновления текста переназначаем DOM-элементы
+        const newUppercaseToggle = document.getElementById('uppercase-toggle');
+        const newLowercaseToggle = document.getElementById('lowercase-toggle'); 
+        const newNumbersToggle = document.getElementById('numbers-toggle');
+        const newSymbolsToggle = document.getElementById('symbols-toggle');
+        
+        // Обновляем обработчики событий для новых элементов
+        [newUppercaseToggle, newLowercaseToggle, newNumbersToggle, newSymbolsToggle].forEach(toggle => {
+            toggle.addEventListener('change', updateStrengthMeter);
+        });
+    }
+    
     // Функция генерации пароля
     function generatePassword() {
         // Проверяем, что хотя бы один тип символов выбран
-        if (!uppercaseToggle.checked && !lowercaseToggle.checked && 
-            !numbersToggle.checked && !symbolsToggle.checked) {
+        const upperToggle = document.getElementById('uppercase-toggle');
+        const lowerToggle = document.getElementById('lowercase-toggle');
+        const numToggle = document.getElementById('numbers-toggle');
+        const symToggle = document.getElementById('symbols-toggle');
+        
+        if (!upperToggle.checked && !lowerToggle.checked && 
+            !numToggle.checked && !symToggle.checked) {
             // Если ничего не выбрано, выбираем строчные буквы по умолчанию
-            lowercaseToggle.checked = true;
+            lowerToggle.checked = true;
         }
         
         let charset = '';
-        if (uppercaseToggle.checked) charset += charSets.uppercase;
-        if (lowercaseToggle.checked) charset += charSets.lowercase;
-        if (numbersToggle.checked) charset += charSets.numbers;
-        if (symbolsToggle.checked) charset += charSets.symbols;
+        if (upperToggle.checked) charset += charSets.uppercase;
+        if (lowerToggle.checked) charset += charSets.lowercase;
+        if (numToggle.checked) charset += charSets.numbers;
+        if (symToggle.checked) charset += charSets.symbols;
         
         let password = '';
         let hasRequiredChars = false;
@@ -66,22 +163,22 @@ document.addEventListener('DOMContentLoaded', function() {
             // Проверяем наличие символов всех выбранных типов
             hasRequiredChars = true;
             
-            if (uppercaseToggle.checked && !/[A-Z]/.test(password)) {
+            if (upperToggle.checked && !/[A-Z]/.test(password)) {
                 hasRequiredChars = false;
                 continue;
             }
             
-            if (lowercaseToggle.checked && !/[a-z]/.test(password)) {
+            if (lowerToggle.checked && !/[a-z]/.test(password)) {
                 hasRequiredChars = false;
                 continue;
             }
             
-            if (numbersToggle.checked && !/[0-9]/.test(password)) {
+            if (numToggle.checked && !/[0-9]/.test(password)) {
                 hasRequiredChars = false;
                 continue;
             }
             
-            if (symbolsToggle.checked && !/[^A-Za-z0-9]/.test(password)) {
+            if (symToggle.checked && !/[^A-Za-z0-9]/.test(password)) {
                 hasRequiredChars = false;
                 continue;
             }
@@ -140,7 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Максимальная оценка - 5
         strength = Math.min(5, Math.floor(strength/2));
         
-        const labels = ['Очень слабый', 'Слабый', 'Средний', 'Хороший', 'Сильный', 'Очень сильный'];
+        const currentLang = localStorage.getItem('preferredLanguage') || 'ru';
+        const labels = translations[currentLang].strengthLabels;
         const colors = ['#ff4d4d', '#ffaa4d', '#ffff4d', '#4dff4d', '#4da6ff', '#8080ff'];
         
         setStrength(strength, labels[strength]);

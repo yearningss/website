@@ -83,66 +83,9 @@
                         <div class="project-card">
                             <div class="project-title">Генератор паролей</div>
                             <p>Надежный и удобный генератор случайных паролей с настраиваемыми параметрами и оценкой безопасности.</p>
-                            <a href="#password-generator" class="btn">Использовать генератор</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Генератор паролей -->
-                    <h2 id="password-generator">Генератор паролей</h2>
-                    <p>Создавайте надежные и уникальные пароли для вашей безопасности в интернете.</p>
-                    
-                    <div class="password-generator" id="password-generator-tool">
-                        <div class="password-display" id="password-display">
-                            <div class="copy-notification" id="copy-notification">Скопировано!</div>
-                            <div class="password-text" id="password-text"></div>
-                            <button class="copy-btn" id="copy-btn">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="password-options">
-                            <div class="password-length">
-                                <span>Длина:</span>
-                                <input type="range" min="8" max="30" value="16" class="password-slider" id="length-slider">
-                                <span class="length-value" id="length-value">16</span>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>
-                                    <input type="checkbox" id="uppercase-toggle" checked> Заглавные буквы (A-Z)
-                                </label>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>
-                                    <input type="checkbox" id="lowercase-toggle" checked> Строчные буквы (a-z)
-                                </label>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>
-                                    <input type="checkbox" id="numbers-toggle" checked> Цифры (0-9)
-                                </label>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>
-                                    <input type="checkbox" id="symbols-toggle" checked> Специальные символы (!@#$%^&*)
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <button class="generate-btn" id="generate-btn">Сгенерировать пароль</button>
-                        
-                        <div class="strength-meter">
-                            <div class="strength-label" id="strength-label">Оценка надежности</div>
-                            <div class="strength-bars">
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                            </div>
+                            <a href="#" class="btn modal-open-btn" data-modal="password-modal">
+                                <i class="fas fa-key"></i> Использовать генератор
+                            </a>
                         </div>
                     </div>
                     
@@ -215,66 +158,9 @@
                         <div class="project-card">
                             <div class="project-title">Password Generator</div>
                             <p>Reliable and convenient random password generator with customizable parameters and security assessment.</p>
-                            <a href="#password-generator" class="btn">Use Generator</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Password Generator -->
-                    <h2 id="password-generator">Password Generator</h2>
-                    <p>Create strong and unique passwords for your online security.</p>
-                    
-                    <div class="password-generator" id="password-generator-tool">
-                        <div class="password-display" id="password-display">
-                            <div class="copy-notification" id="copy-notification">Copied!</div>
-                            <div class="password-text" id="password-text"></div>
-                            <button class="copy-btn" id="copy-btn">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="password-options">
-                            <div class="password-length">
-                                <span>Length:</span>
-                                <input type="range" min="8" max="30" value="16" class="password-slider" id="length-slider">
-                                <span class="length-value" id="length-value">16</span>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>
-                                    <input type="checkbox" id="uppercase-toggle" checked> Uppercase letters (A-Z)
-                                </label>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>
-                                    <input type="checkbox" id="lowercase-toggle" checked> Lowercase letters (a-z)
-                                </label>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>
-                                    <input type="checkbox" id="numbers-toggle" checked> Numbers (0-9)
-                                </label>
-                            </div>
-                            
-                            <div class="option-group">
-                                <label>
-                                    <input type="checkbox" id="symbols-toggle" checked> Special characters (!@#$%^&*)
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <button class="generate-btn" id="generate-btn">Generate Password</button>
-                        
-                        <div class="strength-meter">
-                            <div class="strength-label" id="strength-label">Strength Rating</div>
-                            <div class="strength-bars">
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                            </div>
+                            <a href="#" class="btn modal-open-btn" data-modal="password-modal">
+                                <i class="fas fa-key"></i> Use Generator
+                            </a>
                         </div>
                     </div>
                     
@@ -302,6 +188,72 @@
                 <footer>
                     <p>© 2025 yearningss | Website hosted on <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
                 </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для генератора паролей -->
+    <div class="modal-overlay" id="password-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Генератор паролей</h3>
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="password-generator" id="password-generator-tool">
+                <div class="password-display" id="password-display">
+                    <div class="copy-notification" id="copy-notification">Скопировано!</div>
+                    <div class="password-text" id="password-text"></div>
+                    <button class="copy-btn" id="copy-btn">
+                        <i class="far fa-copy"></i>
+                    </button>
+                </div>
+                
+                <div class="password-options">
+                    <div class="password-length">
+                        <span>Длина:</span>
+                        <input type="range" min="8" max="30" value="16" class="password-slider" id="length-slider">
+                        <span class="length-value" id="length-value">16</span>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="uppercase-toggle" checked> Заглавные буквы (A-Z)
+                        </label>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="lowercase-toggle" checked> Строчные буквы (a-z)
+                        </label>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="numbers-toggle" checked> Цифры (0-9)
+                        </label>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="symbols-toggle" checked> Специальные символы (!@#$%^&*)
+                        </label>
+                    </div>
+                </div>
+                
+                <button class="generate-btn" id="generate-btn">Сгенерировать пароль</button>
+                
+                <div class="strength-meter">
+                    <div class="strength-label" id="strength-label">Оценка надежности</div>
+                    <div class="strength-bars">
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

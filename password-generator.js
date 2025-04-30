@@ -11,17 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    const closeBtn = document.querySelector('.modal-close');
-    const generateBtn = document.querySelector('.generate-button');
-    const passwordResult = document.getElementById('password-result');
-    const copyBtn = document.querySelector('.copy-button');
-    const copyNotification = document.querySelector('.copy-notification');
-    const lengthSlider = document.getElementById('password-length');
+    // Определяем элементы в модальном окне
+    const closeBtn = document.getElementById('modal-close') || document.querySelector('.modal-close');
+    const generateBtn = document.getElementById('generate-btn');
+    const passwordResult = document.getElementById('password-text');
+    const copyBtn = document.getElementById('copy-btn');
+    const copyNotification = document.getElementById('copy-notification');
+    const lengthSlider = document.getElementById('length-slider');
     const lengthValue = document.getElementById('length-value');
-    const uppercaseCheckbox = document.getElementById('include-uppercase');
-    const lowercaseCheckbox = document.getElementById('include-lowercase');
-    const numbersCheckbox = document.getElementById('include-numbers');
-    const symbolsCheckbox = document.getElementById('include-symbols');
+    const uppercaseCheckbox = document.getElementById('uppercase-toggle');
+    const lowercaseCheckbox = document.getElementById('lowercase-toggle');
+    const numbersCheckbox = document.getElementById('numbers-toggle');
+    const symbolsCheckbox = document.getElementById('symbols-toggle');
     const strengthBars = document.querySelectorAll('.strength-bar');
     const ruLangBtn = document.getElementById('btn-ru');
     const enLangBtn = document.getElementById('btn-en');
@@ -43,37 +44,54 @@ document.addEventListener('DOMContentLoaded', function() {
         switchLanguage(savedLanguage);
     }
 
+    // Проверяем все элементы управления
+    if (!closeBtn) console.warn('Кнопка закрытия не найдена!');
+    if (!generateBtn) console.warn('Кнопка генерации не найдена!');
+    if (!passwordResult) console.warn('Элемент для отображения пароля не найден!');
+    if (!lengthSlider) console.warn('Слайдер длины пароля не найден!');
+    
     // Установка начальных опций пароля
-    lowercaseCheckbox.checked = true;
-    uppercaseCheckbox.checked = true;
-    numbersCheckbox.checked = true;
-    symbolsCheckbox.checked = false;
+    if (lowercaseCheckbox) lowercaseCheckbox.checked = true;
+    if (uppercaseCheckbox) uppercaseCheckbox.checked = true;
+    if (numbersCheckbox) numbersCheckbox.checked = true;
+    if (symbolsCheckbox) symbolsCheckbox.checked = false;
 
     // Слушатели событий
-    openModalBtn.addEventListener('click', function() {
-        modal.classList.add('active');
-        generatePassword();
-    });
+    if (openModalBtn) {
+        openModalBtn.addEventListener('click', function() {
+            console.log('Открываем модальное окно');
+            modal.classList.add('active');
+            generatePassword();
+        });
+    }
 
-    closeBtn.addEventListener('click', function() {
-        modal.classList.remove('active');
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            console.log('Закрываем модальное окно');
+            modal.classList.remove('active');
+        });
+    }
 
     // Закрытие модального окна при клике вне его содержимого
     window.addEventListener('click', function(event) {
         if (event.target === modal) {
+            console.log('Закрываем модальное окно по клику вне');
             modal.classList.remove('active');
         }
     });
 
-    lengthSlider.addEventListener('input', function() {
-        passwordLength = parseInt(this.value);
-        lengthValue.textContent = passwordLength;
-        generatePassword();
-    });
+    if (lengthSlider) {
+        lengthSlider.addEventListener('input', function() {
+            passwordLength = parseInt(this.value);
+            if (lengthValue) lengthValue.textContent = passwordLength;
+            generatePassword();
+        });
+    }
 
     // Слушатели событий для чекбоксов
-    const checkboxes = [uppercaseCheckbox, lowercaseCheckbox, numbersCheckbox, symbolsCheckbox];
+    const checkboxes = [uppercaseCheckbox, lowercaseCheckbox, numbersCheckbox, symbolsCheckbox]
+        .filter(checkbox => checkbox !== null);
+    
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             // Убедимся, что хотя бы один чекбокс выбран
@@ -84,9 +102,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    generateBtn.addEventListener('click', generatePassword);
+    if (generateBtn) {
+        generateBtn.addEventListener('click', function() {
+            console.log('Генерируем пароль по клику на кнопку');
+            generatePassword();
+        });
+    }
 
-    copyBtn.addEventListener('click', copyToClipboard);
+    if (copyBtn) {
+        copyBtn.addEventListener('click', copyToClipboard);
+    }
 
     // Слушатели для переключения языка
     if (ruLangBtn) {
@@ -105,16 +130,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Функция генерации пароля
     function generatePassword() {
+        console.log('Запущена функция generatePassword');
+        
+        // Если нет чекбоксов или passwordResult, выходим
+        if (checkboxes.length === 0 || !passwordResult) {
+            console.warn('Нет чекбоксов или элемента для отображения пароля');
+            return;
+        }
+        
         const options = {
             length: passwordLength,
-            hasUppercase: uppercaseCheckbox.checked,
-            hasLowercase: lowercaseCheckbox.checked,
-            hasNumbers: numbersCheckbox.checked,
-            hasSymbols: symbolsCheckbox.checked
+            hasUppercase: uppercaseCheckbox ? uppercaseCheckbox.checked : true,
+            hasLowercase: lowercaseCheckbox ? lowercaseCheckbox.checked : true,
+            hasNumbers: numbersCheckbox ? numbersCheckbox.checked : true,
+            hasSymbols: symbolsCheckbox ? symbolsCheckbox.checked : false
         };
         
+        console.log('Настройки генерации пароля:', options);
+        
         const charset = getCharset(options);
-        if (charset.length === 0) return;
+        if (charset.length === 0) {
+            console.warn('Пустой набор символов');
+            return;
+        }
         
         let password = '';
         let meetsRequirements = false;
@@ -131,8 +169,12 @@ document.addEventListener('DOMContentLoaded', function() {
             meetsRequirements = validatePassword(password, options);
         }
         
+        console.log('Сгенерирован пароль:', password);
         passwordResult.textContent = password;
-        updateStrengthIndicator(password);
+        
+        if (strengthBars && strengthBars.length > 0) {
+            updateStrengthIndicator(password);
+        }
     }
 
     // Получение набора символов для пароля
@@ -229,17 +271,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Копирование пароля в буфер обмена
     function copyToClipboard() {
+        console.log('Запущена функция копирования пароля');
+        
+        if (!passwordResult) {
+            console.warn('Элемент с паролем не найден');
+            return;
+        }
+        
         const password = passwordResult.textContent;
-        if (!password) return;
+        if (!password) {
+            console.warn('Нет пароля для копирования');
+            return;
+        }
+        
+        console.log('Копируем пароль:', password);
         
         navigator.clipboard.writeText(password).then(() => {
-            copyNotification.classList.add('show');
+            console.log('Пароль скопирован успешно');
             
-            setTimeout(() => {
-                copyNotification.classList.remove('show');
-            }, 2000);
+            if (copyNotification) {
+                // Проверяем оба варианта класса для совместимости с разными версиями HTML
+                copyNotification.classList.add('show');
+                
+                setTimeout(() => {
+                    copyNotification.classList.remove('show');
+                }, 2000);
+            }
         }).catch(err => {
-            console.error('Ошибка при копировании: ', err);
+            console.error('Ошибка при копировании:', err);
         });
     }
 

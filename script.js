@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Инициализация модальных окон
     const modalOpenButtons = document.querySelectorAll('.modal-open-btn');
+    const modals = document.querySelectorAll('.modal-overlay, .modal');
+    const closeButtons = document.querySelectorAll('.modal-close');
     
     // Добавляем обработчики событий для открытия модальных окон
     modalOpenButtons.forEach(button => {
@@ -19,12 +21,42 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalId = this.getAttribute('data-modal');
             const modal = document.getElementById(modalId);
             
+            console.log('Открываем модальное окно:', modalId);
+            
             if (modal) {
                 modal.classList.add('active');
                 // Вызываем функцию генерации пароля, если есть
                 if (modalId === 'password-modal' && typeof generatePassword === 'function') {
                     generatePassword();
                 }
+            } else {
+                console.warn('Модальное окно не найдено:', modalId);
+            }
+        });
+    });
+    
+    // Добавляем обработчики для закрытия модальных окон
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            console.log('Нажата кнопка закрытия модального окна');
+            
+            // Находим ближайшее модальное окно
+            const modal = this.closest('.modal-overlay, .modal');
+            if (modal) {
+                console.log('Закрываем модальное окно с ID:', modal.id);
+                modal.classList.remove('active');
+            } else {
+                console.warn('Модальное окно не найдено для кнопки закрытия');
+            }
+        });
+    });
+    
+    // Закрытие модальных окон при клике вне содержимого
+    modals.forEach(modal => {
+        modal.addEventListener('click', function(event) {
+            if (event.target === this) {
+                console.log('Закрываем модальное окно по клику вне содержимого');
+                this.classList.remove('active');
             }
         });
     });

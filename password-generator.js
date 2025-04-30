@@ -14,7 +14,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Определяем элементы в модальном окне
     const closeBtn = document.getElementById('modal-close') || document.querySelector('.modal-close');
     const generateBtn = document.getElementById('generate-btn');
-    const passwordResult = document.getElementById('password-text');
+    
+    // Ищем элемент для отображения пароля, проверяя различные возможные ID
+    let passwordResult = document.getElementById('password-text');
+    console.log('Элемент для отображения пароля (password-text):', passwordResult);
+    
+    // Если не нашли по основному ID, ищем по альтернативным ID или классам
+    if (!passwordResult) {
+        passwordResult = document.getElementById('password-result');
+        console.log('Альтернативный элемент для отображения пароля (password-result):', passwordResult);
+    }
+    
+    if (!passwordResult) {
+        const passwordElements = document.querySelectorAll('.password-text');
+        console.log('Найдены элементы по классу password-text:', passwordElements.length);
+        if (passwordElements.length > 0) {
+            passwordResult = passwordElements[0];
+        }
+    }
+    
     const copyBtn = document.getElementById('copy-btn');
     const copyNotification = document.getElementById('copy-notification');
     const lengthSlider = document.getElementById('length-slider');
@@ -32,6 +50,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const langEn = document.querySelectorAll('.lang-en');
     const hasLanguageElements = langRu.length > 0 && langEn.length > 0;
 
+    console.log('Элемент для отображения пароля (passwordResult):', passwordResult);
+    
+    if (!passwordResult) {
+        // Дополнительная проверка - ищем все элементы, которые могут быть контейнером для пароля
+        console.log('Элемент password-text не найден, ищем альтернативы...');
+        const possiblePasswordElements = document.querySelectorAll('.password-text, #password-result, #password-text');
+        console.log('Возможные элементы для отображения пароля:', possiblePasswordElements);
+        
+        if (possiblePasswordElements.length > 0) {
+            // Используем первый найденный элемент как альтернативу
+            console.log('Используем альтернативный элемент:', possiblePasswordElements[0]);
+            passwordResult = possiblePasswordElements[0];
+        }
+    }
+
     // Инициализация состояния
     let passwordLength = parseInt(lengthSlider.value);
     lengthValue.textContent = passwordLength;
@@ -47,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Проверяем все элементы управления
     if (!closeBtn) console.warn('Кнопка закрытия не найдена!');
     if (!generateBtn) console.warn('Кнопка генерации не найдена!');
-    if (!passwordResult) console.warn('Элемент для отображения пароля не найден!');
     if (!lengthSlider) console.warn('Слайдер длины пароля не найден!');
     
     // Установка начальных опций пароля
@@ -105,7 +137,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (generateBtn) {
         generateBtn.addEventListener('click', function() {
             console.log('Генерируем пароль по клику на кнопку');
+            
+            // Добавляем класс для анимации кнопки
+            this.classList.add('generating');
+            
+            // Показываем анимацию на элементе с паролем
+            if (passwordResult) {
+                passwordResult.classList.add('pulse');
+            }
+            
+            // Генерируем пароль
             generatePassword();
+            
+            // Убираем классы анимации через короткое время
+            setTimeout(() => {
+                this.classList.remove('generating');
+                if (passwordResult) {
+                    passwordResult.classList.remove('pulse');
+                }
+            }, 500);
         });
     }
 
@@ -131,6 +181,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функция генерации пароля
     function generatePassword() {
         console.log('Запущена функция generatePassword');
+        
+        // Повторная проверка/поиск элемента отображения пароля (на случай, если он был добавлен позже)
+        if (!passwordResult) {
+            passwordResult = document.getElementById('password-text') || 
+                             document.getElementById('password-result') ||
+                             document.querySelector('.password-text');
+            console.log('Повторный поиск элемента для отображения пароля:', passwordResult);
+        }
         
         // Если нет чекбоксов или passwordResult, выходим
         if (checkboxes.length === 0 || !passwordResult) {
@@ -242,30 +300,79 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Обновление индикатора надежности пароля
     function updateStrengthIndicator(password) {
+        console.log('Обновляем индикатор надежности пароля');
+        
+        if (!strengthBars || strengthBars.length === 0) {
+            console.warn('Элементы индикатора надежности не найдены');
+            // Ищем элементы индикатора надежности, если они еще не найдены
+            const newStrengthBars = document.querySelectorAll('.strength-bar');
+            if (newStrengthBars.length > 0) {
+                console.log('Нашли элементы индикатора надежности:', newStrengthBars.length);
+                // Используем найденные элементы
+                strengthBars = newStrengthBars;
+            } else {
+                return;
+            }
+        }
+        
         const strength = calculatePasswordStrength(password);
+        console.log('Рассчитанная надежность пароля:', strength);
         
         // Сбросить все классы
         strengthBars.forEach(bar => {
             bar.classList.remove('weak', 'medium', 'strong');
+            // Сбрасываем дополнительные стили
+            bar.style.backgroundColor = '';
+            bar.style.opacity = '0.3';
         });
         
         let strengthClass = '';
         let activeBars = 0;
+        let barColor = '';
         
         if (strength < 40) {
             strengthClass = 'weak';
+            barColor = '#FF4D4D'; // Красный
             activeBars = 1;
         } else if (strength < 80) {
             strengthClass = 'medium';
+            barColor = '#FFA700'; // Оранжевый
             activeBars = 3;
         } else {
             strengthClass = 'strong';
+            barColor = '#43A047'; // Зеленый
             activeBars = 5;
         }
         
+        console.log('Класс надежности пароля:', strengthClass, 'активных полосок:', activeBars);
+        
         // Добавить соответствующий класс к активным полоскам
-        for (let i = 0; i < activeBars; i++) {
+        for (let i = 0; i < activeBars && i < strengthBars.length; i++) {
             strengthBars[i].classList.add(strengthClass);
+            strengthBars[i].style.backgroundColor = barColor;
+            strengthBars[i].style.opacity = '1';
+        }
+        
+        // Обновляем текст надежности, если есть соответствующий элемент
+        const strengthText = document.getElementById('strength-text') || document.querySelector('.strength-text');
+        if (strengthText) {
+            const lang = document.documentElement.lang || localStorage.getItem('preferredLanguage') || 'ru';
+            
+            if (lang === 'ru') {
+                if (strength < 40) strengthText.textContent = 'Очень слабый';
+                else if (strength < 60) strengthText.textContent = 'Слабый';
+                else if (strength < 80) strengthText.textContent = 'Средний';
+                else if (strength < 90) strengthText.textContent = 'Сильный';
+                else strengthText.textContent = 'Очень сильный';
+            } else {
+                if (strength < 40) strengthText.textContent = 'Very Weak';
+                else if (strength < 60) strengthText.textContent = 'Weak';
+                else if (strength < 80) strengthText.textContent = 'Medium';
+                else if (strength < 90) strengthText.textContent = 'Strong';
+                else strengthText.textContent = 'Very Strong';
+            }
+            
+            strengthText.style.color = barColor;
         }
     }
 

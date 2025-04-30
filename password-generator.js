@@ -1,7 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Проверяем, находимся ли мы на странице с генератором паролей
+    
     // Элементы DOM
     const openModalBtn = document.getElementById('open-modal-btn');
     const modal = document.getElementById('password-modal');
+    
+    // Если основные элементы отсутствуют, завершаем инициализацию
+    if (!modal) {
+        console.info('Password generator modal not found on page, skipping initialization');
+        return;
+    }
+    
     const closeBtn = document.querySelector('.modal-close');
     const generateBtn = document.querySelector('.generate-button');
     const passwordResult = document.getElementById('password-result');
@@ -14,12 +23,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const numbersCheckbox = document.getElementById('include-numbers');
     const symbolsCheckbox = document.getElementById('include-symbols');
     const strengthBars = document.querySelectorAll('.strength-bar');
-    const ruLangBtn = document.getElementById('lang-ru');
-    const enLangBtn = document.getElementById('lang-en');
+    const ruLangBtn = document.getElementById('btn-ru');
+    const enLangBtn = document.getElementById('btn-en');
     
     // Языковые элементы
     const langRu = document.querySelectorAll('.lang-ru');
     const langEn = document.querySelectorAll('.lang-en');
+    const hasLanguageElements = langRu.length > 0 && langEn.length > 0;
 
     // Инициализация состояния
     let passwordLength = parseInt(lengthSlider.value);
@@ -27,7 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Установка начального языка
     const savedLanguage = localStorage.getItem('preferredLanguage') || 'ru';
-    switchLanguage(savedLanguage);
+    
+    // Применяем язык только если есть языковые элементы
+    if (hasLanguageElements) {
+        switchLanguage(savedLanguage);
+    }
 
     // Установка начальных опций пароля
     lowercaseCheckbox.checked = true;
@@ -75,15 +89,19 @@ document.addEventListener('DOMContentLoaded', function() {
     copyBtn.addEventListener('click', copyToClipboard);
 
     // Слушатели для переключения языка
-    ruLangBtn.addEventListener('click', function() {
-        switchLanguage('ru');
-        localStorage.setItem('preferredLanguage', 'ru');
-    });
+    if (ruLangBtn) {
+        ruLangBtn.addEventListener('click', function() {
+            switchLanguage('ru');
+            localStorage.setItem('preferredLanguage', 'ru');
+        });
+    }
 
-    enLangBtn.addEventListener('click', function() {
-        switchLanguage('en');
-        localStorage.setItem('preferredLanguage', 'en');
-    });
+    if (enLangBtn) {
+        enLangBtn.addEventListener('click', function() {
+            switchLanguage('en');
+            localStorage.setItem('preferredLanguage', 'en');
+        });
+    }
 
     // Функция генерации пароля
     function generatePassword() {
@@ -227,16 +245,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Переключение языка
     function switchLanguage(lang) {
+        // Если на странице нет языковых элементов, выходим
+        if (!hasLanguageElements) {
+            return;
+        }
+        
         if (lang === 'ru') {
             langRu.forEach(el => el.style.display = 'block');
             langEn.forEach(el => el.style.display = 'none');
-            ruLangBtn.classList.add('active');
-            enLangBtn.classList.remove('active');
+            if (ruLangBtn) ruLangBtn.classList.add('active');
+            if (enLangBtn) enLangBtn.classList.remove('active');
         } else {
             langRu.forEach(el => el.style.display = 'none');
             langEn.forEach(el => el.style.display = 'block');
-            ruLangBtn.classList.remove('active');
-            enLangBtn.classList.add('active');
+            if (ruLangBtn) ruLangBtn.classList.remove('active');
+            if (enLangBtn) enLangBtn.classList.add('active');
         }
     }
 

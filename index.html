@@ -258,6 +258,65 @@
         </div>
     </div>
     
+    <!-- Модальное окно генератора паролей -->
+    <div class="modal" id="password-generator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-lang-ru="Генератор паролей" data-lang-en="Password Generator"></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="password-display">
+                    <div class="password-text" id="password-result"></div>
+                    <button class="copy-btn" id="copy-password" title="Copy password">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <div class="copy-notification" id="copy-notification" data-lang-ru="Скопировано!" data-lang-en="Copied!"></div>
+                </div>
+                
+                <div class="password-options">
+                    <div class="password-length">
+                        <span data-lang-ru="Длина:" data-lang-en="Length:"></span>
+                        <input type="range" id="password-length" min="6" max="30" value="12">
+                        <span id="length-value">12</span>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="uppercase" checked>
+                            <span data-lang-ru="Заглавные буквы" data-lang-en="Uppercase"></span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="lowercase" checked>
+                            <span data-lang-ru="Строчные буквы" data-lang-en="Lowercase"></span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="numbers" checked>
+                            <span data-lang-ru="Цифры" data-lang-en="Numbers"></span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="symbols">
+                            <span data-lang-ru="Символы" data-lang-en="Symbols"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="password-strength">
+                    <span class="strength-title" data-lang-ru="Надежность пароля:" data-lang-en="Password Strength:"></span>
+                    <div class="strength-meter">
+                        <div class="strength-bar" id="bar-1"></div>
+                        <div class="strength-bar" id="bar-2"></div>
+                        <div class="strength-bar" id="bar-3"></div>
+                        <div class="strength-bar" id="bar-4"></div>
+                    </div>
+                    <span class="strength-label" id="strength-text"></span>
+                </div>
+                
+                <button class="generate-btn" id="generate-password" data-lang-ru="Сгенерировать пароль" data-lang-en="Generate Password"></button>
+            </div>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
     <script src="password-generator.js"></script>
 </body>

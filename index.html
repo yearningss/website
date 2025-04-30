@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -252,7 +252,7 @@
             margin-top: 20px;
         }
         
-        /* Language Switcher Styles */
+        /* Language Switcher */
         .language-switcher {
             position: absolute;
             top: 0;
@@ -260,6 +260,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            z-index: 10;
         }
         
         .language-btn {
@@ -286,31 +287,12 @@
             font-size: 1.2rem;
         }
         
-        /* Языковое переключение по умолчанию */
-        .ru-content {
-            display: block;
-        }
-        
-        .en-content {
+        #content-ru, #content-en {
             display: none;
         }
         
-        /* Переопределение для английского языка */
-        [lang="en"] .ru-content {
-            display: none !important;
-        }
-        
-        [lang="en"] .en-content {
-            display: block !important;
-        }
-        
-        /* Переопределение для русского языка */
-        [lang="ru"] .en-content {
-            display: none !important;
-        }
-        
-        [lang="ru"] .ru-content {
-            display: block !important;
+        #content-ru.active, #content-en.active {
+            display: block;
         }
         
         @keyframes fadeIn {
@@ -345,149 +327,208 @@
         }
     </style>
 </head>
-<body lang="ru">
+<body>
     <div class="background"></div>
     
     <div class="container">
         <div class="card">
             <header>
                 <div class="language-switcher">
-                    <button class="language-btn active" data-lang="ru" onclick="setLanguage('ru')">
+                    <button class="language-btn" id="btn-ru">
                         <span class="flag">🇷🇺</span> RU
                     </button>
-                    <button class="language-btn" data-lang="en" onclick="setLanguage('en')">
+                    <button class="language-btn" id="btn-en">
                         <span class="flag">🇬🇧</span> EN
                     </button>
                 </div>
-                
-                <h1 class="ru-content">Добро пожаловать!</h1>
-                <h1 class="en-content">Welcome!</h1>
-                
-                <p class="ru-content">Вы на сайте с проектами разработчика yearningss</p>
-                <p class="en-content">You are on the website with yearningss developer projects</p>
             </header>
             
-            <section>
-                <div class="profile">
-                    <div class="profile-info">
-                        <div class="username">@yearningss</div>
-                        <p class="ru-content">Здесь вы можете ознакомиться с моими проектами и разработками, размещенными на GitHub.</p>
-                        <p class="en-content">Here you can explore my projects and developments hosted on GitHub.</p>
-                        
-                        <div class="social-links">
-                            <a href="https://github.com/yearningss" class="social-link" target="_blank" title="GitHub">
-                                <i class="fab fa-github"></i>
-                            </a>
-                            <a href="https://t.me/yearningss" class="social-link" target="_blank" title="Telegram">
-                                <i class="fab fa-telegram"></i>
-                            </a>
+            <!-- Русская версия контента -->
+            <div id="content-ru">
+                <header>
+                    <h1>Добро пожаловать!</h1>
+                    <p>Вы на сайте с проектами разработчика yearningss</p>
+                </header>
+                
+                <section>
+                    <div class="profile">
+                        <div class="profile-info">
+                            <div class="username">@yearningss</div>
+                            <p>Здесь вы можете ознакомиться с моими проектами и разработками, размещенными на GitHub.</p>
+                            
+                            <div class="social-links">
+                                <a href="https://github.com/yearningss" class="social-link" target="_blank" title="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="https://t.me/yearningss" class="social-link" target="_blank" title="Telegram">
+                                    <i class="fab fa-telegram"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="btn-container" style="margin-top: 20px;">
+                                <a href="https://github.com/yearningss" class="btn github-btn" target="_blank">
+                                    <i class="fab fa-github"></i> Посетить GitHub профиль
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h2>Мои проекты</h2>
+                    <p>На этом сайте вы можете ознакомиться со всеми разрабатываемыми проектами, а также получить дополнительную информацию о каждом из них.</p>
+                    
+                    <div class="projects">
+                        <div class="project-card">
+                            <div class="project-title">Minecraft Server Manager</div>
+                            <p>Инструмент для удобного управления Minecraft серверами с расширенными возможностями администрирования.</p>
+                            <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">Открыть проект</a>
                         </div>
                         
-                        <div class="btn-container" style="margin-top: 20px;">
-                            <a href="https://github.com/yearningss" class="btn github-btn" target="_blank">
-                                <i class="fab fa-github"></i> 
-                                <span class="ru-content">Посетить GitHub профиль</span>
-                                <span class="en-content">Visit GitHub Profile</span>
-                            </a>
+                        <div class="project-card">
+                            <div class="project-title">Test2</div>
+                            <p>Тестовый проект, используемый для разработки и экспериментов.</p>
+                            <a href="https://github.com/yearningss/test2" class="btn" target="_blank">Открыть проект</a>
                         </div>
                     </div>
-                </div>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-code-branch feature-icon"></i>
+                            <h3>Открытый код</h3>
+                            <p>Проекты с открытым исходным кодом доступны для всех</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <i class="fas fa-users feature-icon"></i>
+                            <h3>Сотрудничество</h3>
+                            <p>Открыт для сотрудничества и совместных проектов</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <i class="fas fa-laptop-code feature-icon"></i>
+                            <h3>Разработка</h3>
+                            <p>Постоянное улучшение и обновление проектов</p>
+                        </div>
+                    </div>
+                </section>
                 
-                <h2 class="ru-content">Мои проекты</h2>
-                <h2 class="en-content">My Projects</h2>
+                <footer>
+                    <p>© 2024 yearningss | Сайт размещен на <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
+                </footer>
+            </div>
+            
+            <!-- Английская версия контента -->
+            <div id="content-en">
+                <header>
+                    <h1>Welcome!</h1>
+                    <p>You are on the website with yearningss developer projects</p>
+                </header>
                 
-                <p class="ru-content">На этом сайте вы можете ознакомиться со всеми разрабатываемыми проектами, а также получить дополнительную информацию о каждом из них.</p>
-                <p class="en-content">On this site, you can explore all the projects being developed and get additional information about each of them.</p>
-                
-                <div class="projects">
-                    <div class="project-card">
-                        <div class="project-title">Minecraft Server Manager</div>
-                        <p class="ru-content">Инструмент для удобного управления Minecraft серверами с расширенными возможностями администрирования.</p>
-                        <p class="en-content">A tool for convenient management of Minecraft servers with advanced administration capabilities.</p>
-                        <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">
-                            <span class="ru-content">Открыть проект</span>
-                            <span class="en-content">Open Project</span>
-                        </a>
+                <section>
+                    <div class="profile">
+                        <div class="profile-info">
+                            <div class="username">@yearningss</div>
+                            <p>Here you can explore my projects and developments hosted on GitHub.</p>
+                            
+                            <div class="social-links">
+                                <a href="https://github.com/yearningss" class="social-link" target="_blank" title="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="https://t.me/yearningss" class="social-link" target="_blank" title="Telegram">
+                                    <i class="fab fa-telegram"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="btn-container" style="margin-top: 20px;">
+                                <a href="https://github.com/yearningss" class="btn github-btn" target="_blank">
+                                    <i class="fab fa-github"></i> Visit GitHub Profile
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="project-card">
-                        <div class="project-title">Test2</div>
-                        <p class="ru-content">Тестовый проект, используемый для разработки и экспериментов.</p>
-                        <p class="en-content">Test project used for development and experimentation.</p>
-                        <a href="https://github.com/yearningss/test2" class="btn" target="_blank">
-                            <span class="ru-content">Открыть проект</span>
-                            <span class="en-content">Open Project</span>
-                        </a>
+                    <h2>My Projects</h2>
+                    <p>On this site, you can explore all the projects being developed and get additional information about each of them.</p>
+                    
+                    <div class="projects">
+                        <div class="project-card">
+                            <div class="project-title">Minecraft Server Manager</div>
+                            <p>A tool for convenient management of Minecraft servers with advanced administration capabilities.</p>
+                            <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">Open Project</a>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-title">Test2</div>
+                            <p>Test project used for development and experimentation.</p>
+                            <a href="https://github.com/yearningss/test2" class="btn" target="_blank">Open Project</a>
+                        </div>
                     </div>
-                </div>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-code-branch feature-icon"></i>
+                            <h3>Open Source</h3>
+                            <p>Open source projects available for everyone</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <i class="fas fa-users feature-icon"></i>
+                            <h3>Collaboration</h3>
+                            <p>Open for collaboration and joint projects</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <i class="fas fa-laptop-code feature-icon"></i>
+                            <h3>Development</h3>
+                            <p>Continuous improvement and updating of projects</p>
+                        </div>
+                    </div>
+                </section>
                 
-                <div class="features">
-                    <div class="feature">
-                        <i class="fas fa-code-branch feature-icon"></i>
-                        <h3 class="ru-content">Открытый код</h3>
-                        <h3 class="en-content">Open Source</h3>
-                        <p class="ru-content">Проекты с открытым исходным кодом доступны для всех</p>
-                        <p class="en-content">Open source projects available for everyone</p>
-                    </div>
-                    
-                    <div class="feature">
-                        <i class="fas fa-users feature-icon"></i>
-                        <h3 class="ru-content">Сотрудничество</h3>
-                        <h3 class="en-content">Collaboration</h3>
-                        <p class="ru-content">Открыт для сотрудничества и совместных проектов</p>
-                        <p class="en-content">Open for collaboration and joint projects</p>
-                    </div>
-                    
-                    <div class="feature">
-                        <i class="fas fa-laptop-code feature-icon"></i>
-                        <h3 class="ru-content">Разработка</h3>
-                        <h3 class="en-content">Development</h3>
-                        <p class="ru-content">Постоянное улучшение и обновление проектов</p>
-                        <p class="en-content">Continuous improvement and updating of projects</p>
-                    </div>
-                </div>
-            </section>
+                <footer>
+                    <p>© 2024 yearningss | Website hosted on <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
+                </footer>
+            </div>
         </div>
-        
-        <footer>
-            <p class="ru-content">© 2024 yearningss | Сайт размещен на <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
-            <p class="en-content">© 2024 yearningss | Website hosted on <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
-        </footer>
     </div>
     
     <script>
-        // Глобальная функция для доступа из HTML
-        function setLanguage(lang) {
-            // Update body attribute
-            document.body.setAttribute('lang', lang);
-            
-            // Update active button state
-            document.querySelectorAll('.language-btn').forEach(btn => {
-                if (btn.getAttribute('data-lang') === lang) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            
-            // Принудительно обновляем стили элементов
-            document.querySelectorAll('.ru-content, .en-content').forEach(el => {
-                if ((el.classList.contains('ru-content') && lang === 'ru') || 
-                    (el.classList.contains('en-content') && lang === 'en')) {
-                    el.style.display = 'block';
-                } else {
-                    el.style.display = 'none';
-                }
-            });
-            
-            // Save preference to localStorage
-            localStorage.setItem('preferredLanguage', lang);
-        }
-        
         document.addEventListener('DOMContentLoaded', function() {
-            // Set initial language from localStorage or default to Russian
+            const btnRu = document.getElementById('btn-ru');
+            const btnEn = document.getElementById('btn-en');
+            const contentRu = document.getElementById('content-ru');
+            const contentEn = document.getElementById('content-en');
+            
+            // Устанавливаем язык из localStorage или используем русский по умолчанию
             const savedLang = localStorage.getItem('preferredLanguage') || 'ru';
             setLanguage(savedLang);
+            
+            // Обработчики событий для кнопок
+            btnRu.addEventListener('click', function() {
+                setLanguage('ru');
+            });
+            
+            btnEn.addEventListener('click', function() {
+                setLanguage('en');
+            });
+            
+            // Функция установки языка
+            function setLanguage(lang) {
+                // Активируем контент выбранного языка
+                if (lang === 'ru') {
+                    contentRu.classList.add('active');
+                    contentEn.classList.remove('active');
+                    btnRu.classList.add('active');
+                    btnEn.classList.remove('active');
+                } else {
+                    contentEn.classList.add('active');
+                    contentRu.classList.remove('active');
+                    btnEn.classList.add('active');
+                    btnRu.classList.remove('active');
+                }
+                
+                // Сохраняем выбор в localStorage
+                localStorage.setItem('preferredLanguage', lang);
+            }
         });
     </script>
 </body>

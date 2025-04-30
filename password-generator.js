@@ -37,18 +37,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Слушатели событий
     openModalBtn.addEventListener('click', function() {
-        modal.classList.add('show');
+        modal.classList.add('active');
         generatePassword();
     });
 
     closeBtn.addEventListener('click', function() {
-        modal.classList.remove('show');
+        modal.classList.remove('active');
     });
 
     // Закрытие модального окна при клике вне его содержимого
     window.addEventListener('click', function(event) {
         if (event.target === modal) {
-            modal.classList.remove('show');
+            modal.classList.remove('active');
         }
     });
 

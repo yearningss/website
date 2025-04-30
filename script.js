@@ -9,6 +9,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('theme-toggle');
     const themeIcon = themeToggle.querySelector('.theme-icon');
     
+    // Инициализация модальных окон
+    const modalOpenButtons = document.querySelectorAll('.modal-open-btn');
+    
+    // Добавляем обработчики событий для открытия модальных окон
+    modalOpenButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Предотвращаем переход по ссылке
+            const modalId = this.getAttribute('data-modal');
+            const modal = document.getElementById(modalId);
+            
+            if (modal) {
+                modal.classList.add('active');
+                // Вызываем функцию генерации пароля, если есть
+                if (modalId === 'password-modal' && typeof generatePassword === 'function') {
+                    generatePassword();
+                }
+            }
+        });
+    });
+    
     // Инициализация темы
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);

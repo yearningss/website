@@ -18,6 +18,36 @@
             --accent-color: #8b5cf6;
             --github-color: #171515;
             --background-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            
+            /* Переменные для тем */
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --feature-bg: rgba(255, 255, 255, 0.8);
+            --feature-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --clock-bg: rgba(255, 255, 255, 0.9);
+            --clock-text: var(--primary-color-dark);
+            --clock-label: var(--dark-color);
+            --profile-bg: rgba(255, 255, 255, 0.7);
+            --footer-color: #64748b;
+            --scrollbar-track: #f1f5f9;
+        }
+        
+        /* Темная тема */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e2e8f0;
+            --card-bg: #1e1e1e;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --feature-bg: rgba(40, 40, 40, 0.8);
+            --feature-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            --clock-bg: rgba(40, 40, 40, 0.9);
+            --clock-text: var(--accent-color);
+            --clock-label: #e2e8f0;
+            --profile-bg: rgba(40, 40, 40, 0.7);
+            --footer-color: #94a3b8;
+            --scrollbar-track: #2d3748;
         }
         
         * {
@@ -29,11 +59,12 @@
         body {
             font-family: 'Open Sans', sans-serif;
             line-height: 1.7;
-            color: var(--dark-color);
-            background-color: var(--light-color);
+            color: var(--text-color);
+            background-color: var(--bg-color);
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .background {
@@ -55,15 +86,15 @@
         }
         
         .card {
-            background-color: white;
+            background-color: var(--card-bg);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-shadow);
             overflow: hidden;
             padding: 40px;
             margin-bottom: 30px;
             animation: fadeIn 1s ease-out;
             transform: translateY(0);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
         }
         
         .card:hover {
@@ -110,7 +141,7 @@
         p {
             margin-bottom: 20px;
             font-size: 1.1rem;
-            color: #4b5563;
+            color: var(--text-color);
         }
         
         .features {
@@ -123,9 +154,9 @@
         .feature {
             padding: 20px;
             border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--feature-bg);
+            box-shadow: var(--feature-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             text-align: center;
         }
         
@@ -177,11 +208,11 @@
             overflow: hidden;
             border-radius: 15px;
             padding: 25px;
-            background: rgba(255, 255, 255, 0.7);
+            background: var(--profile-bg);
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             transform: translateY(0);
-            transition: all 0.4s ease;
+            transition: all 0.4s ease, background-color 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -258,8 +289,8 @@
             position: relative;
             overflow: hidden;
             border-left: 4px solid transparent;
-            transition: all 0.4s ease;
-            background-color: #fff;
+            transition: all 0.4s ease, background-color 0.3s ease;
+            background-color: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
@@ -315,7 +346,7 @@
         }
         
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: var(--scrollbar-track);
             border-radius: 5px;
         }
         
@@ -362,7 +393,7 @@
         footer {
             text-align: center;
             padding: 20px;
-            color: #64748b;
+            color: var(--footer-color);
             font-size: 0.9rem;
             margin-top: 20px;
         }
@@ -474,9 +505,144 @@
                 transform: translateY(0);
             }
         }
+        
+        /* Переключатель темы */
+        .theme-switch {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+        }
+        
+        .theme-switch-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-switch-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        [data-theme="dark"] .theme-switch-btn {
+            background: rgba(40, 40, 40, 0.8);
+            color: #f8fafc;
+        }
+        
+        [data-theme="dark"] .theme-switch-btn:hover {
+            background: rgba(60, 60, 60, 0.8);
+        }
+        
+        /* Анимация иконки темы */
+        .theme-icon {
+            transition: transform 0.5s ease;
+        }
+        
+        .theme-switch-btn:hover .theme-icon {
+            transform: rotate(180deg);
+        }
+        
+        /* Стили для часов московского времени */
+        #moscow-time {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--clock-bg);
+            border-radius: 10px;
+            padding: 10px 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--clock-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            cursor: default;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            z-index: 100;
+        }
+        
+        #moscow-time:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+        
+        #moscow-time-label {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: var(--clock-label);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        #moscow-time-digits {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            font-size: 1.3rem;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .time-colon {
+            animation: blinkColon 1s infinite;
+        }
+        
+        .time-unit {
+            position: relative;
+            overflow: hidden;
+            width: 0.7em;
+            height: 1.5em;
+            display: inline-block;
+        }
+        
+        .time-unit span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        
+        .time-unit span.old {
+            transform: translateY(-100%);
+        }
+        
+        .time-unit span.new {
+            transform: translateY(0);
+        }
+        
+        @keyframes blinkColon {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @media (max-width: 768px) {
+            #moscow-time {
+                position: static;
+                margin: 0 auto 15px auto;
+                width: fit-content;
+            }
+        }
     </style>
 </head>
-<body>
+<body data-theme="light">
     <div class="background"></div>
     
     <div class="container">
@@ -489,8 +655,16 @@
                     <button class="language-btn" id="btn-en">
                         <span class="flag">🇬🇧</span> EN
                     </button>
+                    <div class="theme-switch">
+                        <button class="theme-switch-btn" id="theme-toggle">
+                            <i class="fas fa-sun theme-icon"></i>
+                        </button>
+                    </div>
                 </div>
-                <div id="moscow-time" style="position: absolute; top: 0; left: 0; padding: 5px 10px; background: rgba(255, 255, 255, 0.8); border-radius: 20px; font-size: 0.9rem; font-weight: 600; color: var(--primary-color);"></div>
+                <div id="moscow-time">
+                    <div id="moscow-time-label"></div>
+                    <div id="moscow-time-digits"></div>
+                </div>
             </header>
             
             <!-- Русская версия контента -->
@@ -636,22 +810,131 @@
             const contentRu = document.getElementById('content-ru');
             const contentEn = document.getElementById('content-en');
             const moscowTimeEl = document.getElementById('moscow-time');
+            const moscowTimeLabel = document.getElementById('moscow-time-label');
+            const moscowTimeDigits = document.getElementById('moscow-time-digits');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = themeToggle.querySelector('.theme-icon');
+            
+            // Инициализация темы
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+            
+            // Обработчик для переключения темы
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+            
+            // Функция установки темы
+            function setTheme(theme) {
+                document.body.setAttribute('data-theme', theme);
+                // Обновляем иконку
+                if (theme === 'dark') {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                } else {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
+            }
+            
+            // Создаем HTML-структуру для анимированных цифр часов
+            function createTimeDigits() {
+                let html = '';
+                
+                // Часы
+                for (let i = 0; i < 2; i++) {
+                    html += `<div class="time-unit" id="hour-${i}"><span class="new">0</span></div>`;
+                }
+                
+                // Разделитель
+                html += `<div class="time-colon">:</div>`;
+                
+                // Минуты
+                for (let i = 0; i < 2; i++) {
+                    html += `<div class="time-unit" id="minute-${i}"><span class="new">0</span></div>`;
+                }
+                
+                // Разделитель
+                html += `<div class="time-colon">:</div>`;
+                
+                // Секунды
+                for (let i = 0; i < 2; i++) {
+                    html += `<div class="time-unit" id="second-${i}"><span class="new">0</span></div>`;
+                }
+                
+                moscowTimeDigits.innerHTML = html;
+            }
+            
+            createTimeDigits();
             
             // Функция обновления московского времени
             function updateMoscowTime() {
                 const now = new Date();
                 // Московское время (UTC+3)
                 const moscowTime = new Date(now.getTime() + (3 * 60 * 60 * 1000 + now.getTimezoneOffset() * 60 * 1000));
+                
                 const hours = moscowTime.getHours().toString().padStart(2, '0');
                 const minutes = moscowTime.getMinutes().toString().padStart(2, '0');
                 const seconds = moscowTime.getSeconds().toString().padStart(2, '0');
                 
                 const currentLang = localStorage.getItem('preferredLanguage') || 'ru';
                 if (currentLang === 'ru') {
-                    moscowTimeEl.textContent = `Москва: ${hours}:${minutes}:${seconds}`;
+                    moscowTimeLabel.textContent = 'Москва';
                 } else {
-                    moscowTimeEl.textContent = `Moscow: ${hours}:${minutes}:${seconds}`;
+                    moscowTimeLabel.textContent = 'Moscow';
                 }
+                
+                // Обновляем цифры с анимацией
+                updateDigits('hour', hours);
+                updateDigits('minute', minutes);
+                updateDigits('second', seconds);
+            }
+            
+            // Сохраняем предыдущее значение для анимации
+            let prevTimeValues = {
+                hour: ['0', '0'],
+                minute: ['0', '0'],
+                second: ['0', '0']
+            };
+            
+            // Функция для анимации отдельных цифр
+            function updateDigits(unit, value) {
+                const digits = value.split('');
+                
+                for (let i = 0; i < 2; i++) {
+                    const currentDigit = digits[i];
+                    const prevDigit = prevTimeValues[unit][i];
+                    
+                    // Если цифра изменилась, анимируем
+                    if (currentDigit !== prevDigit) {
+                        const digitEl = document.getElementById(`${unit}-${i}`);
+                        
+                        // Создаем новый элемент для новой цифры
+                        const newDigit = document.createElement('span');
+                        newDigit.textContent = currentDigit;
+                        newDigit.className = 'new';
+                        
+                        // Обновляем старую цифру
+                        const oldDigit = digitEl.querySelector('span');
+                        oldDigit.className = 'old';
+                        
+                        // Добавляем новую цифру
+                        digitEl.appendChild(newDigit);
+                        
+                        // Удаляем старую цифру после завершения анимации
+                        setTimeout(() => {
+                            if (oldDigit && oldDigit.parentNode === digitEl) {
+                                digitEl.removeChild(oldDigit);
+                            }
+                        }, 300);
+                    }
+                }
+                
+                // Сохраняем текущие значения
+                prevTimeValues[unit] = digits;
             }
             
             // Обновляем время каждую секунду

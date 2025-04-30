@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Проекты yearningss</title>
+    <title>Проекты yearningss | yearningss Projects</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,6 +74,7 @@
         header {
             text-align: center;
             margin-bottom: 40px;
+            position: relative;
         }
         
         h1 {
@@ -251,6 +252,48 @@
             margin-top: 20px;
         }
         
+        /* Language Switcher Styles */
+        .language-switcher {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .language-btn {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+        }
+        
+        .language-btn:hover, .language-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .language-btn .flag {
+            margin-right: 5px;
+            font-size: 1.2rem;
+        }
+        
+        [lang="en"] .ru-content {
+            display: none;
+        }
+        
+        [lang="ru"] .en-content {
+            display: none;
+        }
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -275,24 +318,42 @@
             .feature {
                 padding: 15px;
             }
+            .language-switcher {
+                position: relative;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
-<body>
+<body lang="ru">
     <div class="background"></div>
     
     <div class="container">
         <div class="card">
             <header>
-                <h1>Добро пожаловать!</h1>
-                <p>Вы на сайте с проектами разработчика yearningss</p>
+                <div class="language-switcher">
+                    <button class="language-btn active" data-lang="ru">
+                        <span class="flag">🇷🇺</span> RU
+                    </button>
+                    <button class="language-btn" data-lang="en">
+                        <span class="flag">🇬🇧</span> EN
+                    </button>
+                </div>
+                
+                <h1 class="ru-content">Добро пожаловать!</h1>
+                <h1 class="en-content">Welcome!</h1>
+                
+                <p class="ru-content">Вы на сайте с проектами разработчика yearningss</p>
+                <p class="en-content">You are on the website with yearningss developer projects</p>
             </header>
             
             <section>
                 <div class="profile">
                     <div class="profile-info">
                         <div class="username">@yearningss</div>
-                        <p>Здесь вы можете ознакомиться с моими проектами и разработками, размещенными на GitHub.</p>
+                        <p class="ru-content">Здесь вы можете ознакомиться с моими проектами и разработками, размещенными на GitHub.</p>
+                        <p class="en-content">Here you can explore my projects and developments hosted on GitHub.</p>
                         
                         <div class="social-links">
                             <a href="https://github.com/yearningss" class="social-link" target="_blank" title="GitHub">
@@ -305,54 +366,109 @@
                         
                         <div class="btn-container" style="margin-top: 20px;">
                             <a href="https://github.com/yearningss" class="btn github-btn" target="_blank">
-                                <i class="fab fa-github"></i> Посетить GitHub профиль
+                                <i class="fab fa-github"></i> 
+                                <span class="ru-content">Посетить GitHub профиль</span>
+                                <span class="en-content">Visit GitHub Profile</span>
                             </a>
                         </div>
                     </div>
                 </div>
                 
-                <h2>Мои проекты</h2>
-                <p>На этом сайте вы можете ознакомиться со всеми разрабатываемыми проектами, а также получить дополнительную информацию о каждом из них.</p>
+                <h2 class="ru-content">Мои проекты</h2>
+                <h2 class="en-content">My Projects</h2>
+                
+                <p class="ru-content">На этом сайте вы можете ознакомиться со всеми разрабатываемыми проектами, а также получить дополнительную информацию о каждом из них.</p>
+                <p class="en-content">On this site, you can explore all the projects being developed and get additional information about each of them.</p>
                 
                 <div class="projects">
                     <div class="project-card">
                         <div class="project-title">Minecraft Server Manager</div>
-                        <p>Инструмент для удобного управления Minecraft серверами с расширенными возможностями администрирования.</p>
-                        <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">Открыть проект</a>
+                        <p class="ru-content">Инструмент для удобного управления Minecraft серверами с расширенными возможностями администрирования.</p>
+                        <p class="en-content">A tool for convenient management of Minecraft servers with advanced administration capabilities.</p>
+                        <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">
+                            <span class="ru-content">Открыть проект</span>
+                            <span class="en-content">Open Project</span>
+                        </a>
                     </div>
                     
                     <div class="project-card">
                         <div class="project-title">Test2</div>
-                        <p>Тестовый проект, используемый для разработки и экспериментов.</p>
-                        <a href="https://github.com/yearningss/test2" class="btn" target="_blank">Открыть проект</a>
+                        <p class="ru-content">Тестовый проект, используемый для разработки и экспериментов.</p>
+                        <p class="en-content">Test project used for development and experimentation.</p>
+                        <a href="https://github.com/yearningss/test2" class="btn" target="_blank">
+                            <span class="ru-content">Открыть проект</span>
+                            <span class="en-content">Open Project</span>
+                        </a>
                     </div>
                 </div>
                 
                 <div class="features">
                     <div class="feature">
                         <i class="fas fa-code-branch feature-icon"></i>
-                        <h3>Открытый код</h3>
-                        <p>Проекты с открытым исходным кодом доступны для всех</p>
+                        <h3 class="ru-content">Открытый код</h3>
+                        <h3 class="en-content">Open Source</h3>
+                        <p class="ru-content">Проекты с открытым исходным кодом доступны для всех</p>
+                        <p class="en-content">Open source projects available for everyone</p>
                     </div>
                     
                     <div class="feature">
                         <i class="fas fa-users feature-icon"></i>
-                        <h3>Сотрудничество</h3>
-                        <p>Открыт для сотрудничества и совместных проектов</p>
+                        <h3 class="ru-content">Сотрудничество</h3>
+                        <h3 class="en-content">Collaboration</h3>
+                        <p class="ru-content">Открыт для сотрудничества и совместных проектов</p>
+                        <p class="en-content">Open for collaboration and joint projects</p>
                     </div>
                     
                     <div class="feature">
                         <i class="fas fa-laptop-code feature-icon"></i>
-                        <h3>Разработка</h3>
-                        <p>Постоянное улучшение и обновление проектов</p>
+                        <h3 class="ru-content">Разработка</h3>
+                        <h3 class="en-content">Development</h3>
+                        <p class="ru-content">Постоянное улучшение и обновление проектов</p>
+                        <p class="en-content">Continuous improvement and updating of projects</p>
                     </div>
                 </div>
             </section>
         </div>
         
         <footer>
-            <p>© 2024 yearningss | Сайт размещен на <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
+            <p class="ru-content">© 2024 yearningss | Сайт размещен на <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
+            <p class="en-content">© 2024 yearningss | Website hosted on <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
         </footer>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageBtns = document.querySelectorAll('.language-btn');
+            
+            // Set initial language from localStorage or default to Russian
+            const savedLang = localStorage.getItem('preferredLanguage') || 'ru';
+            setLanguage(savedLang);
+            
+            // Add click handlers to language buttons
+            languageBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    setLanguage(lang);
+                    
+                    // Save preference to localStorage
+                    localStorage.setItem('preferredLanguage', lang);
+                });
+            });
+            
+            function setLanguage(lang) {
+                // Update body attribute
+                document.body.setAttribute('lang', lang);
+                
+                // Update active button state
+                languageBtns.forEach(btn => {
+                    if (btn.getAttribute('data-lang') === lang) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html> 

@@ -286,12 +286,31 @@
             font-size: 1.2rem;
         }
         
-        [lang="en"] .ru-content {
+        /* Языковое переключение по умолчанию */
+        .ru-content {
+            display: block;
+        }
+        
+        .en-content {
             display: none;
         }
         
+        /* Переопределение для английского языка */
+        [lang="en"] .ru-content {
+            display: none !important;
+        }
+        
+        [lang="en"] .en-content {
+            display: block !important;
+        }
+        
+        /* Переопределение для русского языка */
         [lang="ru"] .en-content {
-            display: none;
+            display: none !important;
+        }
+        
+        [lang="ru"] .ru-content {
+            display: block !important;
         }
         
         @keyframes fadeIn {
@@ -333,10 +352,10 @@
         <div class="card">
             <header>
                 <div class="language-switcher">
-                    <button class="language-btn active" data-lang="ru">
+                    <button class="language-btn active" data-lang="ru" onclick="setLanguage('ru')">
                         <span class="flag">🇷🇺</span> RU
                     </button>
-                    <button class="language-btn" data-lang="en">
+                    <button class="language-btn" data-lang="en" onclick="setLanguage('en')">
                         <span class="flag">🇬🇧</span> EN
                     </button>
                 </div>
@@ -437,37 +456,38 @@
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const languageBtns = document.querySelectorAll('.language-btn');
+        // Глобальная функция для доступа из HTML
+        function setLanguage(lang) {
+            // Update body attribute
+            document.body.setAttribute('lang', lang);
             
+            // Update active button state
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Принудительно обновляем стили элементов
+            document.querySelectorAll('.ru-content, .en-content').forEach(el => {
+                if ((el.classList.contains('ru-content') && lang === 'ru') || 
+                    (el.classList.contains('en-content') && lang === 'en')) {
+                    el.style.display = 'block';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Save preference to localStorage
+            localStorage.setItem('preferredLanguage', lang);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
             // Set initial language from localStorage or default to Russian
             const savedLang = localStorage.getItem('preferredLanguage') || 'ru';
             setLanguage(savedLang);
-            
-            // Add click handlers to language buttons
-            languageBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const lang = this.getAttribute('data-lang');
-                    setLanguage(lang);
-                    
-                    // Save preference to localStorage
-                    localStorage.setItem('preferredLanguage', lang);
-                });
-            });
-            
-            function setLanguage(lang) {
-                // Update body attribute
-                document.body.setAttribute('lang', lang);
-                
-                // Update active button state
-                languageBtns.forEach(btn => {
-                    if (btn.getAttribute('data-lang') === lang) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
-            }
         });
     </script>
 </body>

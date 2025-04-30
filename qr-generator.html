@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="qr-generator.css">
+</head>
+<body>
+    <!-- QR Code Generator Modal -->
+    <div id="qrModal" class="modal">
+        <div class="modal-content qr-modal-content">
+            <span class="close-btn" id="closeQrModal">&times;</span>
+            <h2 id="qrGeneratorTitle">QR Code Generator</h2>
+            
+            <div class="qr-generator-container">
+                <div class="qr-config">
+                    <div class="qr-tabs">
+                        <div class="tab active" data-tab="url" id="urlTab">URL</div>
+                        <div class="tab" data-tab="text" id="textTab">Text</div>
+                        <div class="tab" data-tab="email" id="emailTab">Email</div>
+                        <div class="tab" data-tab="phone" id="phoneTab">Phone</div>
+                        <div class="tab" data-tab="sms" id="smsTab">SMS</div>
+                        <div class="tab" data-tab="vcard" id="vcardTab">vCard</div>
+                        <div class="tab" data-tab="wifi" id="wifiTab">Wi-Fi</div>
+                        <div class="tab" data-tab="geo" id="geoTab">Location</div>
+                    </div>
+                    
+                    <!-- URL Tab Content -->
+                    <div class="tab-content active" id="urlContent">
+                        <div class="qr-input-group">
+                            <label for="urlInput" id="urlInputLabel">Enter URL:</label>
+                            <input type="url" id="urlInput" placeholder="https://example.com">
+                        </div>
+                    </div>
+                    
+                    <!-- Text Tab Content -->
+                    <div class="tab-content" id="textContent">
+                        <div class="qr-input-group">
+                            <label for="textInput" id="textInputLabel">Enter Text:</label>
+                            <textarea id="textInput" rows="4" placeholder="Your text here..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Email Tab Content -->
+                    <div class="tab-content" id="emailContent">
+                        <div class="qr-input-group">
+                            <label for="emailInput" id="emailInputLabel">Email Address:</label>
+                            <input type="email" id="emailInput" placeholder="example@mail.com">
+                        </div>
+                        <div class="qr-input-group">
+                            <label for="emailSubject" id="emailSubjectLabel">Subject (optional):</label>
+                            <input type="text" id="emailSubject">
+                        </div>
+                        <div class="qr-input-group">
+                            <label for="emailBody" id="emailBodyLabel">Body (optional):</label>
+                            <textarea id="emailBody" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Phone Tab Content -->
+                    <div class="tab-content" id="phoneContent">
+                        <div class="qr-input-group">
+                            <label for="phoneInput" id="phoneInputLabel">Phone Number:</label>
+                            <input type="tel" id="phoneInput" placeholder="+1234567890">
+                        </div>
+                    </div>
+                    
+                    <!-- SMS Tab Content -->
+                    <div class="tab-content" id="smsContent">
+                        <div class="qr-input-group">
+                            <label for="smsNumber" id="smsNumberLabel">Phone Number:</label>
+                            <input type="tel" id="smsNumber" placeholder="+1234567890">
+                        </div>
+                        <div class="qr-input-group">
+                            <label for="smsMessage" id="smsMessageLabel">Message:</label>
+                            <textarea id="smsMessage" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- vCard Tab Content -->
+                    <div class="tab-content" id="vcardContent">
+                        <div class="vcard-inputs">
+                            <div class="qr-input-group">
+                                <label for="vcardFirstName" id="vcardFirstNameLabel">First Name:</label>
+                                <input type="text" id="vcardFirstName">
+                            </div>
+                            <div class="qr-input-group">
+                                <label for="vcardLastName" id="vcardLastNameLabel">Last Name:</label>
+                                <input type="text" id="vcardLastName">
+                            </div>
+                            <div class="qr-input-group">
+                                <label for="vcardPhone" id="vcardPhoneLabel">Phone:</label>
+                                <input type="tel" id="vcardPhone">
+                            </div>
+                            <div class="qr-input-group">
+                                <label for="vcardEmail" id="vcardEmailLabel">Email:</label>
+                                <input type="email" id="vcardEmail">
+                            </div>
+                            <div class="qr-input-group">
+                                <label for="vcardCompany" id="vcardCompanyLabel">Company:</label>
+                                <input type="text" id="vcardCompany">
+                            </div>
+                            <div class="qr-input-group">
+                                <label for="vcardJobTitle" id="vcardJobTitleLabel">Job Title:</label>
+                                <input type="text" id="vcardJobTitle">
+                            </div>
+                        </div>
+                        <div class="qr-input-group">
+                            <label for="vcardAddress" id="vcardAddressLabel">Address:</label>
+                            <input type="text" id="vcardAddress">
+                        </div>
+                        <div class="qr-input-group">
+                            <label for="vcardWebsite" id="vcardWebsiteLabel">Website:</label>
+                            <input type="url" id="vcardWebsite">
+                        </div>
+                    </div>
+                    
+                    <!-- Wi-Fi Tab Content -->
+                    <div class="tab-content" id="wifiContent">
+                        <div class="wifi-options">
+                            <div class="qr-input-group">
+                                <label for="wifiSsid" id="wifiSsidLabel">Network Name (SSID):</label>
+                                <input type="text" id="wifiSsid">
+                            </div>
+                            <div class="qr-input-group">
+                                <label for="wifiPassword" id="wifiPasswordLabel">Password:</label>
+                                <input type="text" id="wifiPassword">
+                            </div>
+                            <div class="qr-input-group">
+                                <label for="wifiEncryption" id="wifiEncryptionLabel">Encryption Type:</label>
+                                <select id="wifiEncryption">
+                                    <option value="WPA">WPA/WPA2/WPA3</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="nopass">No Password</option>
+                                </select>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="wifiHidden">
+                                <label for="wifiHidden" id="wifiHiddenLabel">Hidden Network</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Geolocation Tab Content -->
+                    <div class="tab-content" id="geoContent">
+                        <div class="geo-inputs">
+                            <div class="qr-input-group">
+                                <label for="geoLatitude" id="geoLatitudeLabel">Latitude:</label>
+                                <input type="number" step="0.000001" id="geoLatitude" placeholder="37.422">
+                            </div>
+                            <div class="qr-input-group">
+                                <label for="geoLongitude" id="geoLongitudeLabel">Longitude:</label>
+                                <input type="number" step="0.000001" id="geoLongitude" placeholder="-122.084">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- QR Code Options -->
+                    <div class="qr-options">
+                        <h3 id="qrOptionsTitle">QR Code Options</h3>
+                        <div class="qr-option-row">
+                            <div class="qr-option-col">
+                                <div class="qr-input-group">
+                                    <label for="qrSize" id="qrSizeLabel">Size:</label>
+                                    <select id="qrSize">
+                                        <option value="150">Small</option>
+                                        <option value="200" selected>Medium</option>
+                                        <option value="250">Large</option>
+                                        <option value="300">Extra Large</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="qr-option-col">
+                                <div class="qr-input-group">
+                                    <label for="qrCorrection" id="qrCorrectionLabel">Error Correction:</label>
+                                    <select id="qrCorrection">
+                                        <option value="L">Low (7%)</option>
+                                        <option value="M" selected>Medium (15%)</option>
+                                        <option value="Q">Quartile (25%)</option>
+                                        <option value="H">High (30%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="qr-option-row">
+                            <div class="qr-option-col">
+                                <div class="qr-input-group">
+                                    <label for="qrFgColor" id="qrFgColorLabel">
+                                        Foreground Color: 
+                                        <span class="color-preview" id="fgColorPreview" style="background-color: #000000"></span>
+                                    </label>
+                                    <input type="color" id="qrFgColor" value="#000000">
+                                </div>
+                            </div>
+                            <div class="qr-option-col">
+                                <div class="qr-input-group">
+                                    <label for="qrBgColor" id="qrBgColorLabel">
+                                        Background Color:
+                                        <span class="color-preview" id="bgColorPreview" style="background-color: #FFFFFF"></span>
+                                    </label>
+                                    <input type="color" id="qrBgColor" value="#FFFFFF">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="generateQrBtn" class="btn">Generate QR Code</button>
+                </div>
+                
+                <div class="qr-result-container">
+                    <div class="qr-placeholder" id="qrPlaceholder">QR code will appear here</div>
+                    <div class="qr-result" id="qrResult"></div>
+                    <button id="downloadQrBtn" class="btn" style="display:none;">Download QR Code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="qr-generator.js"></script>
+</body>
+</html> 

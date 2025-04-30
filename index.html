@@ -490,6 +490,7 @@
                         <span class="flag">🇬🇧</span> EN
                     </button>
                 </div>
+                <div id="moscow-time" style="position: absolute; top: 0; left: 0; padding: 5px 10px; background: rgba(255, 255, 255, 0.8); border-radius: 20px; font-size: 0.9rem; font-weight: 600; color: var(--primary-color);"></div>
             </header>
             
             <!-- Русская версия контента -->
@@ -555,7 +556,7 @@
                 </section>
                 
                 <footer>
-                    <p>© 2024 yearningss | Сайт размещен на <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
+                    <p>© 2025 yearningss | Сайт размещен на <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
                 </footer>
             </div>
             
@@ -622,7 +623,7 @@
                 </section>
                 
                 <footer>
-                    <p>© 2024 yearningss | Website hosted on <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
+                    <p>© 2025 yearningss | Website hosted on <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
                 </footer>
             </div>
         </div>
@@ -634,6 +635,28 @@
             const btnEn = document.getElementById('btn-en');
             const contentRu = document.getElementById('content-ru');
             const contentEn = document.getElementById('content-en');
+            const moscowTimeEl = document.getElementById('moscow-time');
+            
+            // Функция обновления московского времени
+            function updateMoscowTime() {
+                const now = new Date();
+                // Московское время (UTC+3)
+                const moscowTime = new Date(now.getTime() + (3 * 60 * 60 * 1000 + now.getTimezoneOffset() * 60 * 1000));
+                const hours = moscowTime.getHours().toString().padStart(2, '0');
+                const minutes = moscowTime.getMinutes().toString().padStart(2, '0');
+                const seconds = moscowTime.getSeconds().toString().padStart(2, '0');
+                
+                const currentLang = localStorage.getItem('preferredLanguage') || 'ru';
+                if (currentLang === 'ru') {
+                    moscowTimeEl.textContent = `Москва: ${hours}:${minutes}:${seconds}`;
+                } else {
+                    moscowTimeEl.textContent = `Moscow: ${hours}:${minutes}:${seconds}`;
+                }
+            }
+            
+            // Обновляем время каждую секунду
+            updateMoscowTime();
+            setInterval(updateMoscowTime, 1000);
             
             // Устанавливаем язык из localStorage или используем русский по умолчанию
             const savedLang = localStorage.getItem('preferredLanguage') || 'ru';
@@ -662,6 +685,9 @@
                     btnEn.classList.add('active');
                     btnRu.classList.remove('active');
                 }
+                
+                // Обновляем текст времени для выбранного языка
+                updateMoscowTime();
                 
                 // Сохраняем выбор в localStorage
                 localStorage.setItem('preferredLanguage', lang);

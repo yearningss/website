@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Элементы DOM
     const openModalBtn = document.getElementById('open-modal-btn');
-    const modal = document.getElementById('password-modal');
+    const modal = document.getElementById('password-generator-modal');
     
     // Если основные элементы отсутствуют, завершаем инициализацию
     if (!modal) {
@@ -64,18 +64,18 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     // Определяем элементы в модальном окне
-    const closeBtn = document.getElementById('modal-close') || document.querySelector('.modal-close');
-    const generateBtn = document.getElementById('generate-btn');
-    const modalTitle = document.querySelector('#password-modal .modal-title');
+    const closeBtn = document.querySelector('#password-generator-modal .modal-close');
+    const generateBtn = document.getElementById('generate-password');
+    const modalTitle = document.querySelector('#password-generator-modal .modal-title');
     
     // Ищем элемент для отображения пароля, проверяя различные возможные ID
-    let passwordResult = document.getElementById('password-text');
-    console.log('Элемент для отображения пароля (password-text):', passwordResult);
+    let passwordResult = document.getElementById('password-result');
+    console.log('Элемент для отображения пароля (password-result):', passwordResult);
     
     // Если не нашли по основному ID, ищем по альтернативным ID или классам
     if (!passwordResult) {
-        passwordResult = document.getElementById('password-result');
-        console.log('Альтернативный элемент для отображения пароля (password-result):', passwordResult);
+        passwordResult = document.getElementById('password-text');
+        console.log('Альтернативный элемент для отображения пароля (password-text):', passwordResult);
     }
     
     if (!passwordResult) {
@@ -86,18 +86,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    const copyBtn = document.getElementById('copy-btn');
+    const copyBtn = document.getElementById('copy-password');
     const copyNotification = document.getElementById('copy-notification');
-    const lengthSlider = document.getElementById('length-slider');
+    const lengthSlider = document.getElementById('password-length');
     const lengthValue = document.getElementById('length-value');
     const lengthLabel = document.querySelector('.password-length span:first-child');
-    const uppercaseCheckbox = document.getElementById('uppercase-toggle');
+    const uppercaseCheckbox = document.getElementById('uppercase');
     const uppercaseLabel = uppercaseCheckbox ? uppercaseCheckbox.parentElement.querySelector('span') : null;
-    const lowercaseCheckbox = document.getElementById('lowercase-toggle');
+    const lowercaseCheckbox = document.getElementById('lowercase');
     const lowercaseLabel = lowercaseCheckbox ? lowercaseCheckbox.parentElement.querySelector('span') : null;
-    const numbersCheckbox = document.getElementById('numbers-toggle');
+    const numbersCheckbox = document.getElementById('numbers');
     const numbersLabel = numbersCheckbox ? numbersCheckbox.parentElement.querySelector('span') : null;
-    const symbolsCheckbox = document.getElementById('symbols-toggle');
+    const symbolsCheckbox = document.getElementById('symbols');
     const symbolsLabel = symbolsCheckbox ? symbolsCheckbox.parentElement.querySelector('span') : null;
     const strengthBars = document.querySelectorAll('.strength-bar');
     const strengthLabel = document.querySelector('.strength-label');
@@ -129,8 +129,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let passwordLength = parseInt(lengthSlider?.value || 16);
     if (lengthValue) lengthValue.textContent = passwordLength;
 
+    // Глобальная переменная для хранения чекбоксов
+    let checkboxes = [];
+
     // Получаем предпочтительный язык пользователя
     let currentLanguage = localStorage.getItem('preferredLanguage') || 'ru';
+    console.log('Начальный язык генератора паролей:', currentLanguage);
+    
+    // Принудительно устанавливаем язык из локального хранилища
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            currentLanguage = localStorage.getItem('preferredLanguage') || 'ru';
+            console.log('Язык после загрузки страницы:', currentLanguage);
+            updateUITexts();
+        }, 300);
+    });
     
     // Функция для получения перевода
     function getText(key, defaultText = '') {
@@ -177,41 +190,59 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для обновления всех текстов на странице
     function updateUITexts() {
+        // Принудительно получаем текущий язык из localStorage при каждом обновлении
+        currentLanguage = localStorage.getItem('preferredLanguage') || 'ru';
+        console.log('Обновление текстов на языке:', currentLanguage);
+        
         if (modalTitle) modalTitle.textContent = getText('title');
         if (copyNotification) copyNotification.textContent = getText('passwordCopied');
         if (generateBtn) generateBtn.textContent = getText('generateButton');
-        if (copyBtn && copyBtn.textContent) copyBtn.textContent = getText('copyButton');
+        if (copyBtn) copyBtn.textContent = getText('copyButton');
         if (lengthLabel) lengthLabel.textContent = getText('lengthLabel');
         
-        // Обновляем тексты чекбоксов - новый подход с data-атрибутами
+        // Полное обновление чекбоксов - перебираем все чекбоксы в группе
         const checkboxLabels = document.querySelectorAll('.option-group label');
         
         checkboxLabels.forEach(label => {
             const checkbox = label.querySelector('input[type="checkbox"]');
             if (checkbox) {
-                const type = checkbox.id.replace('-toggle', '');
+                // Определяем тип по ID, убирая возможный суффикс -toggle
+                const id = checkbox.id;
+                let type = id;
+                if (id.includes('uppercase')) type = 'uppercase';
+                if (id.includes('lowercase')) type = 'lowercase';
+                if (id.includes('numbers')) type = 'numbers';
+                if (id.includes('symbols')) type = 'symbols';
+                
                 // Сохраняем состояние чекбокса
                 const isChecked = checkbox.checked;
                 
-                // Сохраняем чекбокс
-                const checkboxClone = checkbox.cloneNode(true);
-                checkboxClone.checked = isChecked; // Восстанавливаем состояние
-                
                 // Обновляем текст метки
                 label.innerHTML = '';
-                label.appendChild(checkboxClone);
+                
+                // Создаем новый чекбокс с таким же ID
+                const newCheckbox = document.createElement('input');
+                newCheckbox.type = 'checkbox';
+                newCheckbox.id = id; // Сохраняем оригинальный ID
+                newCheckbox.checked = isChecked;
+                
+                label.appendChild(newCheckbox);
                 label.appendChild(document.createTextNode(' ' + getText(`options.${type}`)));
                 
-                // Восстанавливаем ссылки на чекбоксы
-                if (checkboxClone.id === 'uppercase-toggle') uppercaseCheckbox = checkboxClone;
-                if (checkboxClone.id === 'lowercase-toggle') lowercaseCheckbox = checkboxClone;
-                if (checkboxClone.id === 'numbers-toggle') numbersCheckbox = checkboxClone;
-                if (checkboxClone.id === 'symbols-toggle') symbolsCheckbox = checkboxClone;
+                // Обновляем глобальные ссылки
+                if (type === 'uppercase') uppercaseCheckbox = newCheckbox;
+                if (type === 'lowercase') lowercaseCheckbox = newCheckbox;
+                if (type === 'numbers') numbersCheckbox = newCheckbox;
+                if (type === 'symbols') symbolsCheckbox = newCheckbox;
             }
         });
         
-        // Заново прикрепляем обработчики к чекбоксам
+        // Заново прикрепляем обработчики событий
         attachCheckboxHandlers();
+        
+        // Обновляем глобальный массив чекбоксов
+        checkboxes = [uppercaseCheckbox, lowercaseCheckbox, numbersCheckbox, symbolsCheckbox]
+            .filter(checkbox => checkbox !== null);
         
         // Обновляем тексты блока с оценкой надежности
         if (strengthLabel) strengthLabel.textContent = getText('strengthLabel');
@@ -223,42 +254,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Функция обработки изменения языка
-    function handleLanguageChange() {
-        currentLanguage = localStorage.getItem('preferredLanguage') || 'ru';
+    function handleLanguageChange(event) {
+        console.log('Вызвана функция handleLanguageChange', event);
+        
+        if (event && event.detail && event.detail.language) {
+            currentLanguage = event.detail.language;
+        } else {
+            currentLanguage = localStorage.getItem('preferredLanguage') || 'ru';
+        }
+        
+        console.log('Язык изменен на:', currentLanguage);
         updateUITexts();
+        
+        // Обновляем генератор пароля
+        generatePassword();
     }
-    
+
     // Добавляем слушатель события изменения языка
     document.addEventListener('languageChanged', handleLanguageChange);
 
     // Применяем начальный язык
     updateUITexts();
     
-    // Функция для переключения языка
-    function switchLanguage(lang) {
-        // Применяем выбранный язык
-        currentLanguage = lang;
-        localStorage.setItem('preferredLanguage', lang);
-        
-        // Обновляем UI
-        updateUITexts();
-        
-        // Если на странице есть языковые элементы, обновляем их видимость
-        if (hasLanguageElements) {
-            if (lang === 'ru') {
-                langRu.forEach(el => el.style.display = 'block');
-                langEn.forEach(el => el.style.display = 'none');
-                if (ruLangBtn) ruLangBtn.classList.add('active');
-                if (enLangBtn) enLangBtn.classList.remove('active');
-            } else {
-                langRu.forEach(el => el.style.display = 'none');
-                langEn.forEach(el => el.style.display = 'block');
-                if (ruLangBtn) ruLangBtn.classList.remove('active');
-                if (enLangBtn) enLangBtn.classList.add('active');
-            }
-        }
-    }
-
     // Проверяем все элементы управления
     if (!closeBtn) console.warn('Кнопка закрытия не найдена!');
     if (!generateBtn) console.warn('Кнопка генерации не найдена!');
@@ -269,6 +286,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (uppercaseCheckbox) uppercaseCheckbox.checked = true;
     if (numbersCheckbox) numbersCheckbox.checked = true;
     if (symbolsCheckbox) symbolsCheckbox.checked = false;
+
+    // Обновляем глобальный массив чекбоксов
+    checkboxes = [uppercaseCheckbox, lowercaseCheckbox, numbersCheckbox, symbolsCheckbox]
+        .filter(checkbox => checkbox !== null);
 
     // Прикрепляем обработчики событий к чекбоксам
     attachCheckboxHandlers();
@@ -334,35 +355,14 @@ document.addEventListener('DOMContentLoaded', function() {
         copyBtn.addEventListener('click', copyToClipboard);
     }
 
-    // Слушатели для переключения языка
-    if (ruLangBtn) {
-        ruLangBtn.addEventListener('click', function() {
-            switchLanguage('ru');
-            
-            // Создаем и диспатчим событие изменения языка
-            const event = new CustomEvent('languageChanged', { detail: { language: 'ru' } });
-            document.dispatchEvent(event);
-        });
-    }
-
-    if (enLangBtn) {
-        enLangBtn.addEventListener('click', function() {
-            switchLanguage('en');
-            
-            // Создаем и диспатчим событие изменения языка
-            const event = new CustomEvent('languageChanged', { detail: { language: 'en' } });
-            document.dispatchEvent(event);
-        });
-    }
-
     // Функция генерации пароля
     function generatePassword() {
         console.log('Запущена функция generatePassword');
         
         // Повторная проверка/поиск элемента отображения пароля (на случай, если он был добавлен позже)
         if (!passwordResult) {
-            passwordResult = document.getElementById('password-text') || 
-                             document.getElementById('password-result') ||
+            passwordResult = document.getElementById('password-result') || 
+                             document.getElementById('password-text') ||
                              document.querySelector('.password-text');
             console.log('Повторный поиск элемента для отображения пароля:', passwordResult);
         }

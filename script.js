@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Вызываем функцию генерации пароля, если это модальное окно для пароля
-                if (modalId === 'password-modal' && typeof generatePassword === 'function') {
+                if (modalId === 'password-generator-modal' && typeof generatePassword === 'function') {
                     console.log('Запускаем генерацию пароля');
                     setTimeout(generatePassword, 100);
                 }
@@ -54,8 +54,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Принудительно устанавливаем display, если не задано стилями
                     modal.style.display = 'flex';
                     
+                    // Проверяем, загружен ли скрипт QR-генератора
+                    if (typeof updateTexts === 'function') {
+                        console.log('Вызываем updateTexts для обновления языка QR-генератора');
+                        updateTexts();
+                    }
+                    
                     // Пробуем активировать вкладку URL по умолчанию, если доступна функция activateTab
                     setTimeout(() => {
+                        // Дополнительно проверяем отображение
+                        if (window.getComputedStyle(modal).display === 'none') {
+                            console.log('Принудительно устанавливаем display для QR-модального окна');
+                            modal.style.display = 'flex';
+                        }
+                        
                         const qrTabs = document.getElementById('qr-tabs');
                         if (qrTabs) {
                             console.log('Найдены вкладки QR');
@@ -266,11 +278,25 @@ document.addEventListener('DOMContentLoaded', function() {
             contentEn.classList.remove('active');
             btnRu.classList.add('active');
             btnEn.classList.remove('active');
+            
+            // Обновляем тексты с атрибутами data-lang-ru и data-lang-en
+            document.querySelectorAll('[data-lang-ru], [data-lang-en]').forEach(el => {
+                if (el.hasAttribute('data-lang-ru')) {
+                    el.textContent = el.getAttribute('data-lang-ru');
+                }
+            });
         } else {
             contentEn.classList.add('active');
             contentRu.classList.remove('active');
             btnEn.classList.add('active');
             btnRu.classList.remove('active');
+            
+            // Обновляем тексты с атрибутами data-lang-ru и data-lang-en
+            document.querySelectorAll('[data-lang-ru], [data-lang-en]').forEach(el => {
+                if (el.hasAttribute('data-lang-en')) {
+                    el.textContent = el.getAttribute('data-lang-en');
+                }
+            });
         }
         
         // Обновляем текст времени для выбранного языка
@@ -278,6 +304,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Сохраняем выбор в localStorage
         localStorage.setItem('preferredLanguage', lang);
+        
+        // Создаем и диспатчим событие изменения языка для обновления всех компонентов
+        console.log('Отправляем событие languageChanged с языком:', lang);
+        const event = new CustomEvent('languageChanged', { 
+            detail: { language: lang },
+            bubbles: true
+        });
+        document.dispatchEvent(event);
         
         // Добавляем анимацию для плавного перехода
         document.querySelectorAll('.feature, .project-card').forEach(el => {

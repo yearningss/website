@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Получаем текущий язык
     let currentLanguage = localStorage.getItem('preferredLanguage') || 'ru';
+    console.log('Начальный язык QR-генератора:', currentLanguage);
     
     // Функция для получения перевода
     function getText(key, replacements = {}) {
@@ -282,13 +283,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция для обработки изменения языка
     function handleLanguageChange(event) {
-        console.log('Обработка события изменения языка', event.detail);
-        if (event.detail && event.detail.language) {
+        console.log('Обработка события изменения языка в QR-генераторе', event);
+        
+        if (event && event.detail && event.detail.language) {
             currentLanguage = event.detail.language;
+            console.log('Язык изменен на:', currentLanguage);
         } else {
             currentLanguage = localStorage.getItem('preferredLanguage') || 'ru';
+            console.log('Язык из localStorage:', currentLanguage);
         }
-        console.log('Язык изменен на:', currentLanguage);
+        
         updateTexts();
     }
     
@@ -296,7 +300,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('languageChanged', handleLanguageChange);
     
     // Инициализируем тексты при загрузке
-    updateTexts();
+    setTimeout(() => {
+        // Принудительно обновляем язык из localStorage
+        currentLanguage = localStorage.getItem('preferredLanguage') || 'ru';
+        console.log('Обновленный язык QR-генератора:', currentLanguage);
+        updateTexts();
+    }, 300);
     
     // Параметры QR-кода
     const qrSize = document.getElementById('qr-size');

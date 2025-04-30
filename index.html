@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проекты yearningss</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-color-dark: #4f46e5;
+            --secondary-color: #f43f5e;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --accent-color: #8b5cf6;
+            --github-color: #171515;
+            --background-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.7;
+            color: var(--dark-color);
+            background-color: var(--light-color);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--background-gradient);
+            clip-path: polygon(0 0, 100% 0, 100% 65%, 0 100%);
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 40px;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-out;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--secondary-color);
+            border-radius: 2px;
+        }
+        
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color-dark);
+        }
+        
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #4b5563;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature {
+            padding: 20px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .github-icon {
+            color: var(--github-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-color-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.5);
+        }
+        
+        .github-btn {
+            background: var(--github-color);
+        }
+        
+        .github-btn:hover {
+            background: #000;
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .profile-info {
+            text-align: center;
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .username {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color-dark);
+            margin-bottom: 10px;
+        }
+        
+        .projects {
+            margin-top: 30px;
+        }
+        
+        .project-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .project-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 40px auto;
+            }
+            .card {
+                padding: 30px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .feature {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    
+    <div class="container">
+        <div class="card">
+            <header>
+                <h1>Добро пожаловать!</h1>
+                <p>Вы на сайте с проектами разработчика yearningss</p>
+            </header>
+            
+            <section>
+                <div class="profile">
+                    <div class="profile-info">
+                        <div class="username">@yearningss</div>
+                        <p>Здесь вы можете ознакомиться с моими проектами и разработками, размещенными на GitHub.</p>
+                        
+                        <div class="social-links">
+                            <a href="https://github.com/yearningss" class="social-link" target="_blank" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://t.me/yearningss" class="social-link" target="_blank" title="Telegram">
+                                <i class="fab fa-telegram"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="btn-container" style="margin-top: 20px;">
+                            <a href="https://github.com/yearningss" class="btn github-btn" target="_blank">
+                                <i class="fab fa-github"></i> Посетить GitHub профиль
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Мои проекты</h2>
+                <p>На этом сайте вы можете ознакомиться со всеми разрабатываемыми проектами, а также получить дополнительную информацию о каждом из них.</p>
+                
+                <div class="projects">
+                    <div class="project-card">
+                        <div class="project-title">Minecraft Server Manager</div>
+                        <p>Инструмент для удобного управления Minecraft серверами с расширенными возможностями администрирования.</p>
+                        <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">Открыть проект</a>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-title">Test2</div>
+                        <p>Тестовый проект, используемый для разработки и экспериментов.</p>
+                        <a href="https://github.com/yearningss/test2" class="btn" target="_blank">Открыть проект</a>
+                    </div>
+                </div>
+                
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-code-branch feature-icon"></i>
+                        <h3>Открытый код</h3>
+                        <p>Проекты с открытым исходным кодом доступны для всех</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <i class="fas fa-users feature-icon"></i>
+                        <h3>Сотрудничество</h3>
+                        <p>Открыт для сотрудничества и совместных проектов</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <i class="fas fa-laptop-code feature-icon"></i>
+                        <h3>Разработка</h3>
+                        <p>Постоянное улучшение и обновление проектов</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>© 2024 yearningss | Сайт размещен на <a href="https://pages.github.com/" target="_blank" style="color: #6366f1; text-decoration: none;">GitHub Pages</a></p>
+        </footer>
+    </div>
+</body>
+</html> 

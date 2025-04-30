@@ -265,16 +265,27 @@ document.addEventListener('DOMContentLoaded', function() {
             if (qrData.length > maxQRLength) {
                 showError(`Данные слишком длинные для QR-кода (${qrData.length} символов, максимум ${maxQRLength})`);
                 
-                // Если это текст или vCard, предлагаем использовать разные уровни коррекции
+                // Если это текст или vCard, предлагаем использовать разные уровни коррекции или разделить данные
                 if (type === 'text' || type === 'vcard') {
                     const optimizedErrorLevel = suggestErrorLevel(qrData.length);
                     if (optimizedErrorLevel) {
                         showInfo(`Попробуйте установить уровень коррекции ошибок '${optimizedErrorLevel}' для больших данных`);
+                        // Добавляем кнопку для автоматического изменения уровня коррекции
+                        addActionButton(`Изменить уровень на '${optimizedErrorLevel}'`, () => {
+                            if (qrErrorCorrection) {
+                                qrErrorCorrection.value = optimizedErrorLevel;
+                                generateQrCode();
+                            }
+                        });
                     } else {
-                        showInfo("Попробуйте сократить данные или разделить на несколько QR-кодов");
+                        showInfo("Данные слишком длинные для одного QR-кода");
+                        // Предлагаем автоматически разделить данные
+                        addActionButton("Разделить на несколько QR-кодов", () => {
+                            splitAndGenerateQRCodes(qrData, type);
+                        });
                     }
                 } else {
-                    showInfo("Попробуйте сократить данные");
+                    showInfo("Попробуйте сократить данные или снизить уровень коррекции ошибок");
                 }
                 return;
             }
@@ -296,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             height: size,
                             colorDark: color,
                             colorLight: bgColor,
-                            correctLevel: QRCode[`ERROR_CORRECT_${errorLevel}`]
+                            correctLevel: getQRErrorCorrectionLevel(errorLevel)
                         });
                         
                         // Показываем кнопку загрузки
@@ -507,5 +518,320 @@ document.addEventListener('DOMContentLoaded', function() {
                 generateQrCode();
             }
         });
+    }
+    
+    // Функция для добавления кнопки действия под сообщением об ошибке
+    function addActionButton(buttonText, callback) {
+        const buttonElement = document.createElement('button');
+        buttonElement.className = 'qr-action-btn';
+        buttonElement.textContent = buttonText;
+        buttonElement.style.backgroundColor = '#3498db';
+        buttonElement.style.color = '#fff';
+        buttonElement.style.border = 'none';
+        buttonElement.style.borderRadius = '4px';
+        buttonElement.style.padding = '8px 12px';
+        buttonElement.style.margin = '10px 0';
+        buttonElement.style.cursor = 'pointer';
+        
+        buttonElement.addEventListener('click', callback);
+        
+        if (qrResult) {
+            qrResult.appendChild(buttonElement);
+        }
+    }
+    
+    // Функция для разделения больших данных на несколько QR-кодов
+    function splitAndGenerateQRCodes(data, type) {
+        // Очищаем контейнер
+        qrResult.innerHTML = '';
+        
+        // Определяем максимальную длину для низкого уровня коррекции
+        const chunkSize = getMaxLengthForErrorLevel('L', getDataType(data)) - 50; // Оставляем запас
+        
+        // Разбиваем данные на части
+        const chunks = [];
+        
+        // Для текста разбиваем по границам слов, если возможно
+        if (type === 'text') {
+            let currentChunk = '';
+            const words = data.split(' ');
+            
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+                const potentialChunk = currentChunk ? currentChunk + ' ' + word : word;
+                
+                if (potentialChunk.length <= chunkSize) {
+                    currentChunk = potentialChunk;
+                } else {
+                    if (currentChunk) {
+                        chunks.push(currentChunk);
+                        currentChunk = word;
+                    } else {
+                        // Если одно слово слишком длинное, разбиваем его
+                        for (let j = 0; j < word.length; j += chunkSize) {
+                            chunks.push(word.substr(j, chunkSize));
+                        }
+                    }
+                }
+            }
+            
+            if (currentChunk) {
+                chunks.push(currentChunk);
+            }
+        } 
+        // Для vCard разбиваем по строкам
+        else if (type === 'vcard') {
+            // Парсим vCard для более умного разделения
+            const lines = data.split('\n');
+            let header = 'BEGIN:VCARD\nVERSION:3.0\n';
+            let footer = 'END:VCARD';
+            
+            // Извлекаем основные данные (имя, организация)
+            let essentials = [];
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].startsWith('N:') || lines[i].startsWith('FN:') || lines[i].startsWith('ORG:')) {
+                    essentials.push(lines[i]);
+                }
+            }
+            
+            // Группируем остальные поля
+            let otherFields = lines.filter(line => 
+                !line.startsWith('BEGIN:') && 
+                !line.startsWith('VERSION:') && 
+                !line.startsWith('END:') && 
+                !essentials.includes(line)
+            );
+            
+            // Создаем первую часть с основной информацией
+            let currentCard = header + essentials.join('\n') + '\n';
+            
+            // Добавляем остальные поля до предела размера
+            for (let i = 0; i < otherFields.length; i++) {
+                const field = otherFields[i];
+                if ((currentCard + field + '\n' + footer).length <= chunkSize) {
+                    currentCard += field + '\n';
+                } else {
+                    // Добавляем текущую часть и начинаем новую
+                    chunks.push(currentCard + footer);
+                    currentCard = header + essentials.join('\n') + '\n' + field + '\n';
+                }
+            }
+            
+            // Добавляем последнюю часть
+            if (currentCard !== header) {
+                chunks.push(currentCard + footer);
+            }
+        }
+        // Для других типов данных просто разбиваем на части
+        else {
+            for (let i = 0; i < data.length; i += chunkSize) {
+                chunks.push(data.substr(i, chunkSize));
+            }
+        }
+        
+        // Показываем информацию о количестве частей
+        showInfo(`Данные разделены на ${chunks.length} QR-кода. Переключайтесь между ними с помощью кнопок ниже:`);
+        
+        // Создаем контейнер для QR-кодов и навигации
+        const qrContainer = document.createElement('div');
+        qrContainer.className = 'qr-split-container';
+        qrContainer.style.textAlign = 'center';
+        
+        // Создаем контейнер для текущего QR-кода
+        const currentQrContainer = document.createElement('div');
+        currentQrContainer.className = 'qr-current-container';
+        currentQrContainer.style.margin = '15px 0';
+        
+        // Добавляем индикатор текущей части
+        const partIndicator = document.createElement('div');
+        partIndicator.className = 'qr-part-indicator';
+        partIndicator.style.margin = '10px 0';
+        partIndicator.style.fontWeight = 'bold';
+        
+        // Создаем навигационные кнопки
+        const navContainer = document.createElement('div');
+        navContainer.className = 'qr-nav-container';
+        navContainer.style.display = 'flex';
+        navContainer.style.justifyContent = 'center';
+        navContainer.style.gap = '10px';
+        navContainer.style.margin = '10px 0';
+        
+        // Добавляем кнопки для навигации между частями
+        let currentPartIndex = 0;
+        
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = 'Предыдущий';
+        prevBtn.className = 'qr-nav-btn prev';
+        prevBtn.style.padding = '8px 12px';
+        prevBtn.style.backgroundColor = '#e0e0e0';
+        prevBtn.style.border = 'none';
+        prevBtn.style.borderRadius = '4px';
+        prevBtn.style.cursor = 'pointer';
+        
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Следующий';
+        nextBtn.className = 'qr-nav-btn next';
+        nextBtn.style.padding = '8px 12px';
+        nextBtn.style.backgroundColor = '#e0e0e0';
+        nextBtn.style.border = 'none';
+        nextBtn.style.borderRadius = '4px';
+        nextBtn.style.cursor = 'pointer';
+        
+        // Функция для обновления отображаемого QR-кода
+        function updateCurrentQRCode() {
+            currentQrContainer.innerHTML = '';
+            partIndicator.textContent = `Часть ${currentPartIndex + 1} из ${chunks.length}`;
+            
+            // Получаем текущие параметры QR-кода
+            const size = parseInt(qrSize.value) || 200;
+            const color = qrColor.value || '#000000';
+            const bgColor = qrBackground.value || '#FFFFFF';
+            
+            // Используем низкий уровень коррекции для максимальной емкости
+            try {
+                new QRCode(currentQrContainer, {
+                    text: chunks[currentPartIndex],
+                    width: size,
+                    height: size,
+                    colorDark: color,
+                    colorLight: bgColor,
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+                
+                // Обновляем состояние кнопок
+                prevBtn.disabled = currentPartIndex === 0;
+                prevBtn.style.opacity = currentPartIndex === 0 ? '0.5' : '1';
+                nextBtn.disabled = currentPartIndex === chunks.length - 1;
+                nextBtn.style.opacity = currentPartIndex === chunks.length - 1 ? '0.5' : '1';
+            } catch (error) {
+                currentQrContainer.innerHTML = `<p style="color: red;">Ошибка при создании QR-кода: ${error.message}</p>`;
+            }
+        }
+        
+        // Добавляем обработчики событий для кнопок
+        prevBtn.addEventListener('click', () => {
+            if (currentPartIndex > 0) {
+                currentPartIndex--;
+                updateCurrentQRCode();
+            }
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            if (currentPartIndex < chunks.length - 1) {
+                currentPartIndex++;
+                updateCurrentQRCode();
+            }
+        });
+        
+        // Собираем интерфейс
+        navContainer.appendChild(prevBtn);
+        navContainer.appendChild(nextBtn);
+        
+        qrContainer.appendChild(partIndicator);
+        qrContainer.appendChild(currentQrContainer);
+        qrContainer.appendChild(navContainer);
+        
+        // Добавляем кнопку для скачивания всех QR-кодов
+        const downloadAllBtn = document.createElement('button');
+        downloadAllBtn.textContent = 'Скачать все QR-коды';
+        downloadAllBtn.className = 'qr-download-all-btn';
+        downloadAllBtn.style.padding = '8px 12px';
+        downloadAllBtn.style.backgroundColor = '#3498db';
+        downloadAllBtn.style.color = 'white';
+        downloadAllBtn.style.border = 'none';
+        downloadAllBtn.style.borderRadius = '4px';
+        downloadAllBtn.style.cursor = 'pointer';
+        downloadAllBtn.style.marginTop = '15px';
+        
+        downloadAllBtn.addEventListener('click', () => {
+            // Создаем временный элемент для сообщения о скачивании
+            const downloadMsg = document.createElement('div');
+            downloadMsg.textContent = 'Подготовка файлов для скачивания...';
+            downloadMsg.style.margin = '10px 0';
+            downloadMsg.style.color = '#3498db';
+            qrContainer.appendChild(downloadMsg);
+            
+            // Запускаем процесс скачивания с задержкой для каждого QR-кода
+            let downloadIndex = 0;
+            
+            function downloadNext() {
+                if (downloadIndex < chunks.length) {
+                    const tempContainer = document.createElement('div');
+                    document.body.appendChild(tempContainer);
+                    
+                    try {
+                        new QRCode(tempContainer, {
+                            text: chunks[downloadIndex],
+                            width: parseInt(qrSize.value) || 200,
+                            height: parseInt(qrSize.value) || 200,
+                            colorDark: qrColor.value || '#000000',
+                            colorLight: qrBackground.value || '#FFFFFF',
+                            correctLevel: QRCode.CorrectLevel.L
+                        });
+                        
+                        // Создаем ссылку для скачивания
+                        setTimeout(() => {
+                            const img = tempContainer.querySelector('img');
+                            if (img) {
+                                const link = document.createElement('a');
+                                link.href = img.src;
+                                link.download = `qrcode-${type}-part-${downloadIndex+1}-of-${chunks.length}.png`;
+                                link.click();
+                            }
+                            
+                            // Удаляем временный контейнер
+                            document.body.removeChild(tempContainer);
+                            
+                            // Обновляем сообщение о скачивании
+                            downloadMsg.textContent = `Скачивание: ${downloadIndex+1} из ${chunks.length}`;
+                            
+                            // Переходим к следующему QR-коду
+                            downloadIndex++;
+                            setTimeout(downloadNext, 800); // Добавляем задержку между скачиваниями
+                        }, 300);
+                    } catch (error) {
+                        console.error('Ошибка при подготовке QR-кода для скачивания:', error);
+                        downloadMsg.textContent = `Ошибка при скачивании части ${downloadIndex+1}: ${error.message}`;
+                        document.body.removeChild(tempContainer);
+                    }
+                } else {
+                    // Все QR-коды скачаны
+                    downloadMsg.textContent = `Все ${chunks.length} QR-кода успешно скачаны!`;
+                    setTimeout(() => {
+                        downloadMsg.style.opacity = '0';
+                        downloadMsg.style.transition = 'opacity 1s';
+                        setTimeout(() => downloadMsg.remove(), 1000);
+                    }, 3000);
+                }
+            }
+            
+            // Начинаем процесс скачивания
+            downloadNext();
+        });
+        
+        qrContainer.appendChild(downloadAllBtn);
+        
+        // Добавляем контейнер в результат
+        qrResult.appendChild(qrContainer);
+        
+        // Показываем первый QR-код
+        updateCurrentQRCode();
+        
+        // Показываем кнопку скачивания
+        if (downloadQrBtn) {
+            downloadQrBtn.style.display = 'inline-block';
+        }
+    }
+    
+    // Функция для получения корректного уровня коррекции ошибок для библиотеки QRCode
+    function getQRErrorCorrectionLevel(level) {
+        const correctionLevels = {
+            'L': QRCode.CorrectLevel.L,
+            'M': QRCode.CorrectLevel.M,
+            'Q': QRCode.CorrectLevel.Q,
+            'H': QRCode.CorrectLevel.H
+        };
+        
+        return correctionLevels[level] || QRCode.CorrectLevel.M;
     }
 }); 

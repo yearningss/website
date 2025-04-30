@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Кнопки вкладок:', tabButtons.length);
     console.log('Контейнеры вкладок:', tabContents.length);
     console.log('Кнопка генерации:', generateQrBtn);
+    console.log('Модальное окно QR:', qrModal);
     
     // Языковые переводы
     const translations = {
@@ -369,12 +370,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Добавляем обработчик для открытия модального окна QR-кода
     const openQrModalBtns = document.querySelectorAll('.modal-open-btn[data-modal="qr-modal"]');
+    console.log('Найдено кнопок для открытия QR-модального окна:', openQrModalBtns.length);
+    
     openQrModalBtns.forEach(btn => {
         btn.addEventListener('click', function(event) {
             event.preventDefault(); // Предотвращаем стандартное поведение ссылки
-            console.log('Открываем модальное окно QR-генератора');
+            console.log('Нажата кнопка открытия QR-модального окна');
             if (qrModal) {
+                console.log('Открываем модальное окно QR-генератора');
                 qrModal.classList.add('active');
+                
+                // Принудительно устанавливаем стиль display для модального окна
+                qrModal.style.display = 'flex';
                 
                 // Активируем первую вкладку при открытии модального окна
                 setTimeout(() => {
@@ -383,6 +390,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         activateTab(firstTab);
                     }
                 }, 100);
+            } else {
+                console.error('Модальное окно QR-генератора не найдено!');
             }
         });
     });
@@ -393,6 +402,8 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault(); // Предотвращаем стандартное поведение ссылки
             console.log('Закрываем модальное окно QR-генератора');
             qrModal.classList.remove('active');
+            // Скрываем модальное окно полностью
+            qrModal.style.display = 'none';
         });
         
         // Закрытие модального окна по клику вне его содержимого
@@ -400,6 +411,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (event.target === qrModal) {
                 console.log('Закрываем модальное окно QR-генератора по клику вне его содержимого');
                 qrModal.classList.remove('active');
+                // Скрываем модальное окно полностью
+                qrModal.style.display = 'none';
             }
         });
     }
@@ -555,9 +568,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                     
                 case 'wifi':
-                    const ssidInput = document.getElementById('qr-wifi-name');
+                    const ssidInput = document.getElementById('qr-wifi-ssid');
                     const passwordInput = document.getElementById('qr-wifi-password');
-                    const typeSelect = document.getElementById('qr-wifi-type');
+                    const typeSelect = document.getElementById('qr-wifi-encryption');
                     const hiddenCheckbox = document.getElementById('qr-wifi-hidden');
                     
                     const ssid = ssidInput.value.trim();

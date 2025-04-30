@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const modals = document.querySelectorAll('.modal-overlay, .modal');
     const closeButtons = document.querySelectorAll('.modal-close');
     
+    console.log('Найдено кнопок для открытия модальных окон:', modalOpenButtons.length);
+    console.log('Найдено модальных окон:', modals.length);
+    
     // Добавляем обработчики событий для открытия модальных окон
     modalOpenButtons.forEach(button => {
         button.addEventListener('click', function(e) {
@@ -21,13 +24,64 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalId = this.getAttribute('data-modal');
             const modal = document.getElementById(modalId);
             
-            console.log('Открываем модальное окно:', modalId);
+            console.log('Нажата кнопка открытия модального окна:', modalId);
             
             if (modal) {
+                console.log('Открываем модальное окно:', modalId);
                 modal.classList.add('active');
-                // Вызываем функцию генерации пароля, если есть
+                
+                // Проверяем, правильно ли отображается модальное окно
+                if (window.getComputedStyle(modal).display === 'none') {
+                    console.log('Принудительно устанавливаем стиль display для модального окна:', modalId);
+                    // Используем flex для модальных окон
+                    modal.style.display = 'flex';
+                }
+                
+                // Дополнительный класс для поддержки устаревших стилей
+                if (modal.classList.contains('modal-overlay')) {
+                    modal.style.display = 'flex';
+                }
+
+                // Вызываем функцию генерации пароля, если это модальное окно для пароля
                 if (modalId === 'password-modal' && typeof generatePassword === 'function') {
-                    generatePassword();
+                    console.log('Запускаем генерацию пароля');
+                    setTimeout(generatePassword, 100);
+                }
+                
+                // Если это QR модальное окно, активируем вкладку по умолчанию
+                if (modalId === 'qr-modal') {
+                    console.log('Это QR-модальное окно');
+                    // Принудительно устанавливаем display, если не задано стилями
+                    modal.style.display = 'flex';
+                    
+                    // Пробуем активировать вкладку URL по умолчанию, если доступна функция activateTab
+                    setTimeout(() => {
+                        const qrTabs = document.getElementById('qr-tabs');
+                        if (qrTabs) {
+                            console.log('Найдены вкладки QR');
+                            const firstTab = qrTabs.querySelector('.tab[data-type="url"]') || qrTabs.querySelector('.tab');
+                            if (firstTab) {
+                                console.log('Активируем первую вкладку QR');
+                                if (typeof activateTab === 'function') {
+                                    activateTab(firstTab);
+                                } else {
+                                    // Ручная активация вкладки, если функция недоступна
+                                    const tabs = qrTabs.querySelectorAll('.tab');
+                                    const contents = document.querySelectorAll('.tab-content');
+                                    
+                                    tabs.forEach(tab => tab.classList.remove('active'));
+                                    contents.forEach(content => content.classList.remove('active'));
+                                    
+                                    firstTab.classList.add('active');
+                                    const contentId = firstTab.getAttribute('data-type') + '-content';
+                                    const content = document.getElementById(contentId);
+                                    if (content) content.classList.add('active');
+                                }
+                            }
+                        } else {
+                            console.warn('Не найдены вкладки QR');
+                        }
+                    }, 200);
                 }
             } else {
                 console.warn('Модальное окно не найдено:', modalId);
@@ -45,6 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (modal) {
                 console.log('Закрываем модальное окно с ID:', modal.id);
                 modal.classList.remove('active');
+                // Скрываем модальное окно полностью
+                modal.style.display = 'none';
             } else {
                 console.warn('Модальное окно не найдено для кнопки закрытия');
             }
@@ -57,6 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (event.target === this) {
                 console.log('Закрываем модальное окно по клику вне содержимого');
                 this.classList.remove('active');
+                // Скрываем модальное окно полностью
+                this.style.display = 'none';
             }
         });
     });

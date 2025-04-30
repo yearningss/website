@@ -148,18 +148,70 @@ document.addEventListener('DOMContentLoaded', function() {
         return translation;
     }
     
+    // Функция для прикрепления обработчиков событий к чекбоксам
+    function attachCheckboxHandlers() {
+        const checkboxes = [uppercaseCheckbox, lowercaseCheckbox, numbersCheckbox, symbolsCheckbox]
+            .filter(checkbox => checkbox !== null);
+        
+        checkboxes.forEach(checkbox => {
+            // Удаляем старые обработчики (если есть)
+            checkbox.removeEventListener('change', checkboxChangeHandler);
+            
+            // Добавляем новый обработчик
+            checkbox.addEventListener('change', checkboxChangeHandler);
+        });
+    }
+    
+    // Обработчик изменения чекбокса
+    function checkboxChangeHandler() {
+        // Убедимся, что хотя бы один чекбокс выбран
+        const checkboxes = [uppercaseCheckbox, lowercaseCheckbox, numbersCheckbox, symbolsCheckbox]
+            .filter(cb => cb !== null);
+        
+        if(!checkboxes.some(box => box.checked)) {
+            this.checked = true;
+            alert(getText('errors.noOptions'));
+        }
+        generatePassword();
+    }
+    
     // Функция для обновления всех текстов на странице
     function updateUITexts() {
         if (modalTitle) modalTitle.textContent = getText('title');
         if (copyNotification) copyNotification.textContent = getText('passwordCopied');
         if (generateBtn) generateBtn.textContent = getText('generateButton');
+        if (copyBtn && copyBtn.textContent) copyBtn.textContent = getText('copyButton');
         if (lengthLabel) lengthLabel.textContent = getText('lengthLabel');
         
-        // Обновляем тексты чекбоксов
-        if (uppercaseLabel) uppercaseLabel.textContent = getText('options.uppercase');
-        if (lowercaseLabel) lowercaseLabel.textContent = getText('options.lowercase');
-        if (numbersLabel) numbersLabel.textContent = getText('options.numbers');
-        if (symbolsLabel) symbolsLabel.textContent = getText('options.symbols');
+        // Обновляем тексты чекбоксов - новый подход с data-атрибутами
+        const checkboxLabels = document.querySelectorAll('.option-group label');
+        
+        checkboxLabels.forEach(label => {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                const type = checkbox.id.replace('-toggle', '');
+                // Сохраняем состояние чекбокса
+                const isChecked = checkbox.checked;
+                
+                // Сохраняем чекбокс
+                const checkboxClone = checkbox.cloneNode(true);
+                checkboxClone.checked = isChecked; // Восстанавливаем состояние
+                
+                // Обновляем текст метки
+                label.innerHTML = '';
+                label.appendChild(checkboxClone);
+                label.appendChild(document.createTextNode(' ' + getText(`options.${type}`)));
+                
+                // Восстанавливаем ссылки на чекбоксы
+                if (checkboxClone.id === 'uppercase-toggle') uppercaseCheckbox = checkboxClone;
+                if (checkboxClone.id === 'lowercase-toggle') lowercaseCheckbox = checkboxClone;
+                if (checkboxClone.id === 'numbers-toggle') numbersCheckbox = checkboxClone;
+                if (checkboxClone.id === 'symbols-toggle') symbolsCheckbox = checkboxClone;
+            }
+        });
+        
+        // Заново прикрепляем обработчики к чекбоксам
+        attachCheckboxHandlers();
         
         // Обновляем тексты блока с оценкой надежности
         if (strengthLabel) strengthLabel.textContent = getText('strengthLabel');
@@ -218,6 +270,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (numbersCheckbox) numbersCheckbox.checked = true;
     if (symbolsCheckbox) symbolsCheckbox.checked = false;
 
+    // Прикрепляем обработчики событий к чекбоксам
+    attachCheckboxHandlers();
+
     // Слушатели событий
     if (openModalBtn) {
         openModalBtn.addEventListener('click', function() {
@@ -249,21 +304,6 @@ document.addEventListener('DOMContentLoaded', function() {
             generatePassword();
         });
     }
-
-    // Слушатели событий для чекбоксов
-    const checkboxes = [uppercaseCheckbox, lowercaseCheckbox, numbersCheckbox, symbolsCheckbox]
-        .filter(checkbox => checkbox !== null);
-    
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            // Убедимся, что хотя бы один чекбокс выбран
-            if(!checkboxes.some(box => box.checked)) {
-                this.checked = true;
-                alert(getText('errors.noOptions'));
-            }
-            generatePassword();
-        });
-    });
 
     if (generateBtn) {
         generateBtn.addEventListener('click', function() {

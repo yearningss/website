@@ -260,6 +260,25 @@ document.addEventListener('DOMContentLoaded', function() {
             const bgColor = qrBackground.value || '#FFFFFF';
             const errorLevel = qrErrorCorrection.value || 'M';
             
+            // Проверяем длину данных
+            const maxQRLength = getMaxLengthForErrorLevel(errorLevel, getDataType(qrData));
+            if (qrData.length > maxQRLength) {
+                showError(`Данные слишком длинные для QR-кода (${qrData.length} символов, максимум ${maxQRLength})`);
+                
+                // Если это текст или vCard, предлагаем использовать разные уровни коррекции
+                if (type === 'text' || type === 'vcard') {
+                    const optimizedErrorLevel = suggestErrorLevel(qrData.length);
+                    if (optimizedErrorLevel) {
+                        showInfo(`Попробуйте установить уровень коррекции ошибок '${optimizedErrorLevel}' для больших данных`);
+                    } else {
+                        showInfo("Попробуйте сократить данные или разделить на несколько QR-кодов");
+                    }
+                } else {
+                    showInfo("Попробуйте сократить данные");
+                }
+                return;
+            }
+            
             // Создаем QR-код, если библиотека доступна
             if (typeof QRCode !== 'undefined') {
                 try {
@@ -268,30 +287,143 @@ document.addEventListener('DOMContentLoaded', function() {
                         qrResult.innerHTML = '';
                     }
                     
-                    // Создаем новый QR-код
-                    currentQrCode = new QRCode(qrResult, {
-                        text: qrData,
-                        width: size,
-                        height: size,
-                        colorDark: color,
-                        colorLight: bgColor,
-                        correctLevel: QRCode[`ERROR_CORRECT_${errorLevel}`]
-                    });
-                    
-                    // Показываем кнопку загрузки
-                    if (downloadQrBtn) {
-                        downloadQrBtn.style.display = 'inline-block';
+                    // Обертываем создание QR-кода в блок try-catch для обработки ошибок
+                    try {
+                        // Создаем новый QR-код
+                        currentQrCode = new QRCode(qrResult, {
+                            text: qrData,
+                            width: size,
+                            height: size,
+                            colorDark: color,
+                            colorLight: bgColor,
+                            correctLevel: QRCode[`ERROR_CORRECT_${errorLevel}`]
+                        });
+                        
+                        // Показываем кнопку загрузки
+                        if (downloadQrBtn) {
+                            downloadQrBtn.style.display = 'inline-block';
+                        }
+                        
+                        clearMessages();
+                        console.log('QR-код успешно создан:', qrData);
+                    } catch (error) {
+                        handleQRCodeError(error, qrData, type);
                     }
-                    
-                    console.log('QR-код успешно создан:', qrData);
                 } catch (error) {
                     console.error('Ошибка при создании QR-кода:', error);
-                    qrResult.innerHTML = '<p class="error">Ошибка при создании QR-кода</p>';
+                    showError(`Ошибка при создании QR-кода: ${error.message}`);
                 }
             } else {
                 console.error('Библиотека QRCode не найдена');
-                qrResult.innerHTML = '<p class="error">Библиотека QRCode не загружена</p>';
+                showError('Библиотека QRCode не загружена');
             }
+        }
+    }
+    
+    // Функция для обработки ошибок QR-кода
+    function handleQRCodeError(error, data, type) {
+        console.error('Ошибка при создании QR-кода:', error);
+        
+        if (error.message.includes('too long')) {
+            // Обработка ошибки "Too long data"
+            showError('Данные слишком длинные для QR-кода');
+            
+            // Предложение решений в зависимости от типа QR-кода
+            if (type === 'text' || type === 'vcard') {
+                showInfo('Попробуйте сократить контент или разделить данные на несколько QR-кодов');
+            } else if (type === 'wifi' && data.includes('P:')) {
+                showInfo('Попробуйте использовать более короткий пароль WiFi');
+            } else {
+                showInfo('Сократите информацию или удалите необязательные поля');
+            }
+            
+            // Предложение изменить уровень коррекции
+            showInfo('Также можно попробовать снизить уровень коррекции ошибок до "L" для увеличения емкости QR-кода');
+        } else {
+            showError(`Ошибка при создании QR-кода: ${error.message}`);
+        }
+    }
+    
+    // Функция для определения типа данных
+    function getDataType(data) {
+        if (data.startsWith('http') || data.startsWith('www')) return 'alphanumeric';
+        if (data.startsWith('BEGIN:VCARD')) return 'binary';
+        if (data.startsWith('WIFI:')) return 'binary';
+        if (data.startsWith('mailto:')) return 'alphanumeric';
+        if (data.startsWith('tel:') || data.startsWith('sms:') || data.startsWith('geo:')) return 'numeric';
+        if (/^[0-9]+$/.test(data)) return 'numeric';
+        if (/^[0-9A-Z $%*+\-./:]+$/.test(data)) return 'alphanumeric';
+        return 'binary';
+    }
+    
+    // Функция для получения максимальной длины данных для QR-кода в зависимости от уровня коррекции ошибок
+    function getMaxLengthForErrorLevel(errorLevel, dataType) {
+        // Приблизительные максимальные длины для разных типов данных и уровней коррекции
+        const maxLengths = {
+            L: { // Низкий уровень коррекции (7%)
+                numeric: 7089,
+                alphanumeric: 4296,
+                binary: 2953
+            },
+            M: { // Средний уровень коррекции (15%)
+                numeric: 5596,
+                alphanumeric: 3391,
+                binary: 2331
+            },
+            Q: { // Средне-высокий уровень коррекции (25%)
+                numeric: 3993,
+                alphanumeric: 2420,
+                binary: 1663
+            },
+            H: { // Высокий уровень коррекции (30%)
+                numeric: 3057,
+                alphanumeric: 1852,
+                binary: 1273
+            }
+        };
+        
+        return maxLengths[errorLevel][dataType] || 1000; // По умолчанию возвращаем безопасное значение
+    }
+    
+    // Функция для предложения оптимального уровня коррекции ошибок
+    function suggestErrorLevel(dataLength) {
+        if (dataLength <= 1273) return 'H'; // Высокий уровень коррекции
+        if (dataLength <= 1663) return 'Q'; // Средне-высокий уровень
+        if (dataLength <= 2331) return 'M'; // Средний уровень
+        if (dataLength <= 2953) return 'L'; // Низкий уровень
+        return null; // Данные слишком длинные для любого уровня
+    }
+    
+    // Функция для отображения ошибки
+    function showError(message) {
+        const errorElement = document.createElement('p');
+        errorElement.className = 'qr-error';
+        errorElement.textContent = message;
+        errorElement.style.color = '#e74c3c';
+        errorElement.style.fontWeight = 'bold';
+        
+        if (qrResult) {
+            qrResult.appendChild(errorElement);
+        }
+    }
+    
+    // Функция для отображения информационного сообщения
+    function showInfo(message) {
+        const infoElement = document.createElement('p');
+        infoElement.className = 'qr-info';
+        infoElement.textContent = message;
+        infoElement.style.color = '#3498db';
+        
+        if (qrResult) {
+            qrResult.appendChild(infoElement);
+        }
+    }
+    
+    // Функция для очистки сообщений
+    function clearMessages() {
+        if (qrResult) {
+            const messages = qrResult.querySelectorAll('.qr-error, .qr-info');
+            messages.forEach(msg => msg.remove());
         }
     }
     

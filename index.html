@@ -16,7 +16,18 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="qr-generator.css">
 </head>
-<body data-theme="light">
+<body data-theme="light" class="loading">
+    <!-- Прелоадер -->
+    <div class="preloader">
+        <div class="paw-loader">
+            <div class="paw"></div>
+            <div class="paw"></div>
+            <div class="paw"></div>
+            <div class="paw"></div>
+        </div>
+        <div class="preloader-text" data-lang-ru="Загрузка..." data-lang-en="Loading..."></div>
+    </div>
+
     <div class="background"></div>
     
     <div class="container">
@@ -78,7 +89,17 @@
                         <div class="project-card">
                             <div class="project-title">Minecraft Server Manager</div>
                             <p>Инструмент для удобного управления Minecraft серверами с расширенными возможностями администрирования.</p>
-                            <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">Открыть проект</a>
+                            <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">
+                                <i class="fas fa-cube minecraft-icon"></i> Открыть проект
+                            </a>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-title">UserBot-Telegram</div>
+                            <p>Многофункциональный пользовательский бот для Telegram с расширенными возможностями автоматизации и управления чатами.</p>
+                            <a href="https://github.com/yearningss/UserBot-Telegram" class="btn" target="_blank">
+                                <i class="fab fa-telegram"></i> Открыть проект
+                            </a>
                         </div>
                         
                         <div class="project-card">
@@ -161,7 +182,17 @@
                         <div class="project-card">
                             <div class="project-title">Minecraft Server Manager</div>
                             <p>A tool for convenient management of Minecraft servers with advanced administration capabilities.</p>
-                            <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">Open Project</a>
+                            <a href="https://github.com/yearningss/Minecraft-Server-Manager" class="btn" target="_blank">
+                                <i class="fas fa-cube minecraft-icon"></i> Open Project
+                            </a>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-title">UserBot-Telegram</div>
+                            <p>Multifunctional user bot for Telegram with advanced automation and chat management capabilities.</p>
+                            <a href="https://github.com/yearningss/UserBot-Telegram" class="btn" target="_blank">
+                                <i class="fab fa-telegram"></i> Open Project
+                            </a>
                         </div>
                         
                         <div class="project-card">
@@ -530,7 +561,77 @@
     <!-- QRCode.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
-    <script src="password-generator.js"></script>
+    <script src="fixed-password-generator.js"></script>
     <script src="qr-generator.js"></script>
+
+    <!-- Скрипт для прелоадера -->
+    <script>
+    // Глобальная функция для обновления текста прелоадера
+    window.updatePreloaderText = function() {
+        const preloaderText = document.querySelector('.preloader-text');
+        if (!preloaderText) return;
+        
+        const currentLang = localStorage.getItem('language') || localStorage.getItem('preferredLanguage') || 'ru';
+        console.log('Обновление текста прелоадера для языка:', currentLang);
+        
+        if (currentLang === 'en' && preloaderText.hasAttribute('data-lang-en')) {
+            preloaderText.textContent = preloaderText.getAttribute('data-lang-en');
+        } else if (preloaderText.hasAttribute('data-lang-ru')) {
+            preloaderText.textContent = preloaderText.getAttribute('data-lang-ru');
+        }
+    };
+    
+    // Функция для скрытия прелоадера
+    function hidePreloader() {
+        const preloader = document.querySelector('.preloader');
+        if (!preloader) return;
+        
+        const body = document.body;
+        console.log('Скрытие прелоадера...');
+        
+        // Добавляем небольшую задержку для плавности
+        setTimeout(() => {
+            preloader.classList.add('hidden');
+            body.classList.remove('loading');
+            
+            // Полностью убираем прелоадер после завершения анимации
+            setTimeout(() => {
+                preloader.style.display = 'none';
+                console.log('Прелоадер скрыт полностью');
+            }, 800);
+        }, 1200); // Увеличиваем задержку для лучшей демонстрации прелоадера
+    }
+
+    // Обработчик события загрузки страницы
+    window.addEventListener('load', function() {
+        console.log('Страница полностью загружена');
+        
+        // Обновляем текст прелоадера
+        updatePreloaderText();
+        
+        // Скрываем прелоадер
+        hidePreloader();
+    });
+
+    // На случай, если загрузка произошла быстрее, чем отработал скрипт
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded сработал');
+        
+        // Вызываем функцию для обновления текста прелоадера
+        updatePreloaderText();
+        
+        // Если страница уже загружена, скрываем прелоадер
+        if (document.readyState === 'complete') {
+            console.log('Страница уже загружена при DOMContentLoaded');
+            hidePreloader();
+        }
+        
+        // Прослушиваем событие смены языка для обновления прелоадера
+        document.addEventListener('languageChanged', function(event) {
+            console.log('Получено событие languageChanged');
+            updatePreloaderText();
+        });
+    });
+    </script>
 </body>
 </html> 

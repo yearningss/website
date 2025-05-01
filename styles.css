@@ -54,6 +54,7 @@ body {
     position: relative;
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 100 100'%3E%3Cpath d='M50 15C45 15 40 20 40 25C40 30 45 35 50 35C55 35 60 30 60 25C60 20 55 15 50 15Z' fill='%236e42c1' stroke='%23371b85' stroke-width='2'/%3E%3Cpath d='M30 25C25 25 20 30 20 35C20 40 25 45 30 45C35 45 40 40 40 35C40 30 35 25 30 25Z' fill='%236e42c1' stroke='%23371b85' stroke-width='2'/%3E%3Cpath d='M70 25C65 25 60 30 60 35C60 40 65 45 70 45C75 45 80 40 80 35C80 30 75 25 70 25Z' fill='%236e42c1' stroke='%23371b85' stroke-width='2'/%3E%3Cpath d='M50 45C35 45 25 60 30 75C35 85 45 85 50 85C55 85 65 85 70 75C75 60 65 45 50 45Z' fill='%235a3aa8' stroke='%23371b85' stroke-width='2'/%3E%3C/svg%3E"), auto;
 }
 
 .background {
@@ -424,10 +425,13 @@ footer {
 
 #content-ru, #content-en {
     display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 #content-ru.active, #content-en.active {
     display: block;
+    opacity: 1;
 }
 
 @keyframes fadeIn {
@@ -1624,4 +1628,170 @@ button, input, .modal-content, .password-display {
         transform: scale(20, 20);
         opacity: 0;
     }
+}
+
+.minecraft-icon {
+    color: #ffffff; /* Белый цвет куба */
+    font-size: 1.2em;
+    margin-right: 8px;
+    vertical-align: middle;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.btn:hover .minecraft-icon {
+    transform: scale(1.1);
+    color: #e1e1e1; /* Светло-серый при наведении */
+}
+
+/* Для интерактивных элементов (кнопки, ссылки) меняем курсор на указатель-лапку */
+a, button, .btn, .language-btn, .modal-open-btn, .copy-btn, input[type="range"], input[type="checkbox"], label {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 100 100'%3E%3Cpath d='M50 15C45 15 40 20 40 25C40 30 45 35 50 35C55 35 60 30 60 25C60 20 55 15 50 15Z' fill='%236e42c1' stroke='%23371b85' stroke-width='2'/%3E%3Cpath d='M30 25C25 25 20 30 20 35C20 40 25 45 30 45C35 45 40 40 40 35C40 30 35 25 30 25Z' fill='%236e42c1' stroke='%23371b85' stroke-width='2'/%3E%3Cpath d='M70 25C65 25 60 30 60 35C60 40 65 45 70 45C75 45 80 40 80 35C80 30 75 25 70 25Z' fill='%236e42c1' stroke='%23371b85' stroke-width='2'/%3E%3Cpath d='M50 45C35 45 25 60 30 75C35 85 45 85 50 85C55 85 65 85 70 75C75 60 65 45 50 45Z' fill='%235a3aa8' stroke='%23371b85' stroke-width='2'/%3E%3C/svg%3E"), pointer;
+}
+
+/* Стили для прелоадера (загрузки сайта) */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.preloader::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(110, 66, 193, 0.2) 0%, rgba(26, 26, 46, 0) 70%);
+    pointer-events: none;
+}
+
+.preloader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.paw-loader {
+    position: relative;
+    width: 140px;
+    height: 140px;
+}
+
+.paw {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #6e42c1;
+    border-radius: 50%;
+    animation: pawAnimation 2s infinite;
+    box-shadow: 0 0 15px rgba(110, 66, 193, 0.7);
+}
+
+.paw::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #5a3aa8;
+    opacity: 0.4;
+    animation: pawGlow 2s infinite;
+}
+
+.paw:nth-child(1) {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation-delay: 0s;
+}
+
+.paw:nth-child(2) {
+    top: 30%;
+    left: 15%;
+    width: 35px;
+    height: 35px;
+    animation-delay: 0.25s;
+}
+
+.paw:nth-child(3) {
+    top: 30%;
+    right: 15%;
+    width: 35px;
+    height: 35px;
+    animation-delay: 0.5s;
+}
+
+.paw:nth-child(4) {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 55px;
+    height: 55px;
+    animation-delay: 0.75s;
+}
+
+@keyframes pawAnimation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pawGlow {
+    0% {
+        opacity: 0.4;
+        box-shadow: 0 0 10px rgba(110, 66, 193, 0.5);
+    }
+    50% {
+        opacity: 0.8;
+        box-shadow: 0 0 25px rgba(90, 58, 168, 0.8);
+    }
+    100% {
+        opacity: 0.4;
+        box-shadow: 0 0 10px rgba(110, 66, 193, 0.5);
+    }
+}
+
+.preloader-text {
+    position: relative;
+    margin-top: 35px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #9d84d2;
+    text-align: center;
+    font-size: 20px;
+    letter-spacing: 2px;
+    animation: textFade 2s infinite;
+    text-shadow: 0 0 10px rgba(157, 132, 210, 0.5);
+}
+
+@keyframes textFade {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+/* Добавляем состояние "загрузка" для body */
+body.loading {
+    overflow: hidden;
 } 

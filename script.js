@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM загружен - инициализация скриптов');
+    
     const btnRu = document.getElementById('btn-ru');
     const btnEn = document.getElementById('btn-en');
     const contentRu = document.getElementById('content-ru');
@@ -7,147 +9,75 @@ document.addEventListener('DOMContentLoaded', function() {
     const moscowTimeLabel = document.getElementById('moscow-time-label');
     const moscowTimeDigits = document.getElementById('moscow-time-digits');
     const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = themeToggle.querySelector('.theme-icon');
+    const themeIcon = themeToggle ? themeToggle.querySelector('.theme-icon') : null;
     
-    // Инициализация модальных окон
-    const modalOpenButtons = document.querySelectorAll('.modal-open-btn');
-    const modals = document.querySelectorAll('.modal-overlay, .modal');
-    const closeButtons = document.querySelectorAll('.modal-close');
+    console.log('Элементы найдены:', {
+        btnRu: Boolean(btnRu),
+        btnEn: Boolean(btnEn),
+        contentRu: Boolean(contentRu),
+        contentEn: Boolean(contentEn),
+        themeToggle: Boolean(themeToggle),
+        themeIcon: Boolean(themeIcon)
+    });
     
-    console.log('Найдено кнопок для открытия модальных окон:', modalOpenButtons.length);
-    console.log('Найдено модальных окон:', modals.length);
-    
-    // Добавляем обработчики событий для открытия модальных окон
-    modalOpenButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault(); // Предотвращаем переход по ссылке
-            const modalId = this.getAttribute('data-modal');
-            const modal = document.getElementById(modalId);
-            
-            console.log('Нажата кнопка открытия модального окна:', modalId);
-            
-            if (modal) {
-                console.log('Открываем модальное окно:', modalId);
-                modal.classList.add('active');
-                
-                // Проверяем, правильно ли отображается модальное окно
-                if (window.getComputedStyle(modal).display === 'none') {
-                    console.log('Принудительно устанавливаем стиль display для модального окна:', modalId);
-                    // Используем flex для модальных окон
-                    modal.style.display = 'flex';
-                }
-                
-                // Дополнительный класс для поддержки устаревших стилей
-                if (modal.classList.contains('modal-overlay')) {
-                    modal.style.display = 'flex';
-                }
-
-                // Вызываем функцию генерации пароля, если это модальное окно для пароля
-                if (modalId === 'password-generator-modal' && typeof generatePassword === 'function') {
-                    console.log('Запускаем генерацию пароля');
-                    setTimeout(generatePassword, 100);
-                }
-                
-                // Если это QR модальное окно, активируем вкладку по умолчанию
-                if (modalId === 'qr-modal') {
-                    console.log('Это QR-модальное окно');
-                    // Принудительно устанавливаем display, если не задано стилями
-                    modal.style.display = 'flex';
-                    
-                    // Проверяем, загружен ли скрипт QR-генератора
-                    if (typeof updateTexts === 'function') {
-                        console.log('Вызываем updateTexts для обновления языка QR-генератора');
-                        updateTexts();
-                    }
-                    
-                    // Пробуем активировать вкладку URL по умолчанию, если доступна функция activateTab
-                    setTimeout(() => {
-                        // Дополнительно проверяем отображение
-                        if (window.getComputedStyle(modal).display === 'none') {
-                            console.log('Принудительно устанавливаем display для QR-модального окна');
-                            modal.style.display = 'flex';
-                        }
-                        
-                        const qrTabs = document.getElementById('qr-tabs');
-                        if (qrTabs) {
-                            console.log('Найдены вкладки QR');
-                            const firstTab = qrTabs.querySelector('.tab[data-type="url"]') || qrTabs.querySelector('.tab');
-                            if (firstTab) {
-                                console.log('Активируем первую вкладку QR');
-                                if (typeof activateTab === 'function') {
-                                    activateTab(firstTab);
-                                } else {
-                                    // Ручная активация вкладки, если функция недоступна
-                                    const tabs = qrTabs.querySelectorAll('.tab');
-                                    const contents = document.querySelectorAll('.tab-content');
-                                    
-                                    tabs.forEach(tab => tab.classList.remove('active'));
-                                    contents.forEach(content => content.classList.remove('active'));
-                                    
-                                    firstTab.classList.add('active');
-                                    const contentId = firstTab.getAttribute('data-type') + '-content';
-                                    const content = document.getElementById(contentId);
-                                    if (content) content.classList.add('active');
-                                }
-                            }
-                        } else {
-                            console.warn('Не найдены вкладки QR');
-                        }
-                    }, 200);
-                }
-            } else {
-                console.warn('Модальное окно не найдено:', modalId);
-            }
+    // ИСПРАВЛЕНИЕ: Инициализация контейнеров с содержимым без дополнительных проверок
+    if (contentRu && contentEn) {
+        // Сначала скрываем оба контейнера напрямую через CSS
+        contentRu.style.display = 'none';
+        contentEn.style.display = 'none';
+        contentRu.classList.remove('active');
+        contentEn.classList.remove('active');
+        
+        // Получаем сохраненный язык
+        let initialLang = localStorage.getItem('language') || localStorage.getItem('preferredLanguage') || 'ru';
+        if (initialLang !== 'ru' && initialLang !== 'en') {
+            initialLang = 'ru';
+        }
+        console.log('Инициализация языка:', initialLang);
+        
+        // Активируем соответствующий контейнер
+        if (initialLang === 'ru') {
+            contentRu.style.display = 'block';
+            contentRu.classList.add('active');
+            if (btnRu) btnRu.classList.add('active');
+            if (btnEn) btnEn.classList.remove('active');
+            document.title = 'Проекты yearningss';
+        } else {
+            contentEn.style.display = 'block';
+            contentEn.classList.add('active');
+            if (btnRu) btnRu.classList.remove('active');
+            if (btnEn) btnEn.classList.add('active');
+            document.title = 'yearningss Projects';
+        }
+        
+        // Сохраняем текущий язык
+        localStorage.setItem('language', initialLang);
+        localStorage.setItem('preferredLanguage', initialLang);
+        
+        console.log('Контейнеры контента инициализированы:', {
+            'ru-display': contentRu.style.display,
+            'ru-class': contentRu.className,
+            'en-display': contentEn.style.display,
+            'en-class': contentEn.className
         });
-    });
+    } else {
+        console.error('Не удалось найти контейнеры контента');
+    }
     
-    // Добавляем обработчики для закрытия модальных окон
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            console.log('Нажата кнопка закрытия модального окна');
-            
-            // Находим ближайшее модальное окно
-            const modal = this.closest('.modal-overlay, .modal');
-            if (modal) {
-                console.log('Закрываем модальное окно с ID:', modal.id);
-                modal.classList.remove('active');
-                // Скрываем модальное окно полностью
-                modal.style.display = 'none';
-            } else {
-                console.warn('Модальное окно не найдено для кнопки закрытия');
-            }
-        });
-    });
+    // ИСПРАВЛЕНИЕ: Проверка и инициализация темы
+    let savedTheme = localStorage.getItem('theme');
+    if (!savedTheme || (savedTheme !== 'light' && savedTheme !== 'dark')) {
+        savedTheme = 'light';
+        localStorage.setItem('theme', savedTheme);
+    }
+    console.log('Инициализация темы:', savedTheme);
     
-    // Закрытие модальных окон при клике вне содержимого
-    modals.forEach(modal => {
-        modal.addEventListener('click', function(event) {
-            if (event.target === this) {
-                console.log('Закрываем модальное окно по клику вне содержимого');
-                this.classList.remove('active');
-                // Скрываем модальное окно полностью
-                this.style.display = 'none';
-            }
-        });
-    });
+    // Устанавливаем тему
+    document.body.setAttribute('data-theme', savedTheme);
     
-    // Инициализация темы
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    
-    // Обработчик для переключения темы
-    themeToggle.addEventListener('click', function() {
-        const currentTheme = document.body.getAttribute('data-theme');
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-    });
-    
-    // Функция установки темы
-    function setTheme(theme) {
-        document.body.setAttribute('data-theme', theme);
-        // Обновляем иконку
-        if (theme === 'dark') {
+    // Обновляем иконку темы
+    if (themeIcon) {
+        if (savedTheme === 'dark') {
             themeIcon.classList.remove('fa-sun');
             themeIcon.classList.add('fa-moon');
         } else {
@@ -156,38 +86,150 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Создаем HTML-структуру для анимированных цифр часов
-    function createTimeDigits() {
-        let html = '';
+    // Добавляем обработчик для кнопки переключения темы
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.body.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            console.log('Переключение темы:', currentTheme, '->', newTheme);
+            
+            // Меняем атрибут темы
+            document.body.setAttribute('data-theme', newTheme);
+            
+            // Обновляем иконку
+            if (themeIcon) {
+                if (newTheme === 'dark') {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                } else {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
+            }
+            
+            // Сохраняем новую тему
+            localStorage.setItem('theme', newTheme);
+        });
+    }
+    
+    // Добавляем обработчики переключения языка
+    if (btnRu) {
+        btnRu.addEventListener('click', function() {
+            switchLanguage('ru');
+        });
+    }
+    
+    if (btnEn) {
+        btnEn.addEventListener('click', function() {
+            switchLanguage('en');
+        });
+    }
+    
+    // ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА
+    function switchLanguage(lang) {
+        if (!contentRu || !contentEn) {
+            console.error('Не удалось найти контейнеры контента');
+            return;
+        }
         
+        console.log('Переключение языка на', lang);
+        
+        // Переключаем классы активности и видимость
+        if (lang === 'ru') {
+            contentRu.style.display = 'block';
+            contentEn.style.display = 'none';
+            contentRu.classList.add('active');
+            contentEn.classList.remove('active');
+            if (btnRu) btnRu.classList.add('active');
+            if (btnEn) btnEn.classList.remove('active');
+            document.title = 'Проекты yearningss';
+        } else {
+            contentRu.style.display = 'none';
+            contentEn.style.display = 'block';
+            contentRu.classList.remove('active');
+            contentEn.classList.add('active');
+            if (btnRu) btnRu.classList.remove('active');
+            if (btnEn) btnEn.classList.add('active');
+            document.title = 'yearningss Projects';
+        }
+        
+        // Сохраняем выбранный язык
+        localStorage.setItem('language', lang);
+        localStorage.setItem('preferredLanguage', lang);
+        
+        // Обновляем тексты с атрибутами data-lang
+        updateLocalizedTexts(lang);
+        
+        // Обновляем время Москвы
+        updateMoscowTimeLabel(lang);
+        
+        // Создаем событие смены языка
+        const event = new CustomEvent('languageChanged', { 
+            detail: { language: lang },
+            bubbles: true
+        });
+        document.dispatchEvent(event);
+    }
+    
+    // Обновляем локализованные тексты
+    function updateLocalizedTexts(lang) {
+        const elements = document.querySelectorAll('[data-lang-ru], [data-lang-en]');
+        
+        elements.forEach(element => {
+            if (lang === 'en' && element.hasAttribute('data-lang-en')) {
+                element.textContent = element.getAttribute('data-lang-en');
+            } else if (lang === 'ru' && element.hasAttribute('data-lang-ru')) {
+                element.textContent = element.getAttribute('data-lang-ru');
+            }
+        });
+        
+        console.log('Локализованные тексты обновлены');
+    }
+    
+    // Обновляем метку времени Москвы
+    function updateMoscowTimeLabel(lang) {
+        if (moscowTimeLabel) {
+            moscowTimeLabel.textContent = lang === 'ru' ? 'Москва' : 'Moscow';
+        }
+    }
+    
+    // Инициализируем московское время
+    function initMoscowTime() {
+        if (!moscowTimeDigits) return;
+        
+        let html = '';
         // Часы
         for (let i = 0; i < 2; i++) {
             html += `<div class="time-unit" id="hour-${i}"><span class="new">0</span></div>`;
         }
-        
         // Разделитель
         html += `<div class="time-colon">:</div>`;
-        
         // Минуты
         for (let i = 0; i < 2; i++) {
             html += `<div class="time-unit" id="minute-${i}"><span class="new">0</span></div>`;
         }
-        
         // Разделитель
         html += `<div class="time-colon">:</div>`;
-        
         // Секунды
         for (let i = 0; i < 2; i++) {
             html += `<div class="time-unit" id="second-${i}"><span class="new">0</span></div>`;
         }
         
         moscowTimeDigits.innerHTML = html;
+        
+        // Инициализируем текст метки времени
+        const currentLang = localStorage.getItem('language') || localStorage.getItem('preferredLanguage') || 'ru';
+        updateMoscowTimeLabel(currentLang);
+        
+        // Запускаем обновление времени
+        updateMoscowTime();
+        setInterval(updateMoscowTime, 1000);
     }
     
-    createTimeDigits();
-    
-    // Функция обновления московского времени
+    // Обновление московского времени
     function updateMoscowTime() {
+        if (!moscowTimeDigits) return;
+        
         const now = new Date();
         // Московское время (UTC+3)
         const moscowTime = new Date(now.getTime() + (3 * 60 * 60 * 1000 + now.getTimezoneOffset() * 60 * 1000));
@@ -196,38 +238,32 @@ document.addEventListener('DOMContentLoaded', function() {
         const minutes = moscowTime.getMinutes().toString().padStart(2, '0');
         const seconds = moscowTime.getSeconds().toString().padStart(2, '0');
         
-        const currentLang = localStorage.getItem('preferredLanguage') || 'ru';
-        if (currentLang === 'ru') {
-            moscowTimeLabel.textContent = 'Москва';
-        } else {
-            moscowTimeLabel.textContent = 'Moscow';
-        }
-        
-        // Обновляем цифры с анимацией
-        updateDigits('hour', hours);
-        updateDigits('minute', minutes);
-        updateDigits('second', seconds);
+        // Обновляем цифры
+        updateTimeDigits('hour', hours);
+        updateTimeDigits('minute', minutes);
+        updateTimeDigits('second', seconds);
     }
     
-    // Сохраняем предыдущее значение для анимации
+    // Сохраняем предыдущие значения для анимации
     let prevTimeValues = {
         hour: ['0', '0'],
         minute: ['0', '0'],
         second: ['0', '0']
     };
     
-    // Функция для анимации отдельных цифр
-    function updateDigits(unit, value) {
+    // Функция для обновления цифр времени
+    function updateTimeDigits(unit, value) {
         const digits = value.split('');
         
         for (let i = 0; i < 2; i++) {
+            const digitEl = document.getElementById(`${unit}-${i}`);
+            if (!digitEl) continue;
+            
             const currentDigit = digits[i];
             const prevDigit = prevTimeValues[unit][i];
             
             // Если цифра изменилась, анимируем
             if (currentDigit !== prevDigit) {
-                const digitEl = document.getElementById(`${unit}-${i}`);
-                
                 // Создаем новый элемент для новой цифры
                 const newDigit = document.createElement('span');
                 newDigit.textContent = currentDigit;
@@ -235,7 +271,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Обновляем старую цифру
                 const oldDigit = digitEl.querySelector('span');
-                oldDigit.className = 'old';
+                if (oldDigit) {
+                    oldDigit.className = 'old';
+                }
                 
                 // Добавляем новую цифру
                 digitEl.appendChild(newDigit);
@@ -253,114 +291,93 @@ document.addEventListener('DOMContentLoaded', function() {
         prevTimeValues[unit] = digits;
     }
     
-    // Обновляем время каждую секунду
-    updateMoscowTime();
-    setInterval(updateMoscowTime, 1000);
+    // Инициализируем модальные окна
+    initModalWindows();
     
-    // Устанавливаем язык из localStorage или используем русский по умолчанию
-    const savedLang = localStorage.getItem('preferredLanguage') || 'ru';
-    setLanguage(savedLang);
+    // Инициализируем московское время
+    initMoscowTime();
     
-    // Обработчики событий для кнопок
-    btnRu.addEventListener('click', function() {
-        setLanguage('ru');
-    });
+    // Инициализируем локализованные тексты
+    const currentLang = localStorage.getItem('language') || localStorage.getItem('preferredLanguage') || 'ru';
+    updateLocalizedTexts(currentLang);
     
-    btnEn.addEventListener('click', function() {
-        setLanguage('en');
-    });
-    
-    // Функция установки языка
-    function setLanguage(lang) {
-        // Активируем контент выбранного языка
-        if (lang === 'ru') {
-            contentRu.classList.add('active');
-            contentEn.classList.remove('active');
-            btnRu.classList.add('active');
-            btnEn.classList.remove('active');
-            
-            // Обновляем тексты с атрибутами data-lang-ru и data-lang-en
-            document.querySelectorAll('[data-lang-ru], [data-lang-en]').forEach(el => {
-                if (el.hasAttribute('data-lang-ru')) {
-                    el.textContent = el.getAttribute('data-lang-ru');
+    // Инициализация модальных окон
+    function initModalWindows() {
+        const modalOpenButtons = document.querySelectorAll('.modal-open-btn');
+        const modals = document.querySelectorAll('.modal-overlay, .modal');
+        const closeButtons = document.querySelectorAll('.modal-close');
+        
+        // Добавляем обработчики событий для открытия модальных окон
+        modalOpenButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const modalId = this.getAttribute('data-modal');
+                const modal = document.getElementById(modalId);
+                
+                if (modal) {
+                    modal.classList.add('active');
+                    modal.style.display = 'flex';
+                    
+                    // Запускаем генерацию пароля, если это модальное окно для пароля
+                    if (modalId === 'password-generator-modal' && typeof generatePassword === 'function') {
+                        setTimeout(generatePassword, 100);
+                    }
+                    
+                    // Если это QR модальное окно, активируем вкладку по умолчанию
+                    if (modalId === 'qr-modal' && typeof updateTexts === 'function') {
+                        updateTexts();
+                        
+                        setTimeout(() => {
+                            const qrTabs = document.getElementById('qr-tabs');
+                            if (qrTabs) {
+                                const firstTab = qrTabs.querySelector('.tab[data-type="url"]') || qrTabs.querySelector('.tab');
+                                if (firstTab && typeof activateTab === 'function') {
+                                    activateTab(firstTab);
+                                }
+                            }
+                        }, 200);
+                    }
                 }
             });
-        } else {
-            contentEn.classList.add('active');
-            contentRu.classList.remove('active');
-            btnEn.classList.add('active');
-            btnRu.classList.remove('active');
-            
-            // Обновляем тексты с атрибутами data-lang-ru и data-lang-en
-            document.querySelectorAll('[data-lang-ru], [data-lang-en]').forEach(el => {
-                if (el.hasAttribute('data-lang-en')) {
-                    el.textContent = el.getAttribute('data-lang-en');
-                }
-            });
-        }
-        
-        // Обновляем текст времени для выбранного языка
-        updateMoscowTime();
-        
-        // Сохраняем выбор в localStorage
-        localStorage.setItem('preferredLanguage', lang);
-        
-        // Создаем и диспатчим событие изменения языка для обновления всех компонентов
-        console.log('Отправляем событие languageChanged с языком:', lang);
-        const event = new CustomEvent('languageChanged', { 
-            detail: { language: lang },
-            bubbles: true
         });
-        document.dispatchEvent(event);
         
-        // Добавляем анимацию для плавного перехода
-        document.querySelectorAll('.feature, .project-card').forEach(el => {
-            el.style.animation = 'fadeIn 0.5s ease-out forwards';
-            el.style.animationDelay = Math.random() * 0.3 + 's';
+        // Добавляем обработчики для закрытия модальных окон
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const modal = this.closest('.modal-overlay, .modal');
+                if (modal) {
+                    modal.classList.remove('active');
+                    modal.style.display = 'none';
+                }
+            });
+        });
+        
+        // Закрытие модальных окон при клике вне содержимого
+        modals.forEach(modal => {
+            modal.addEventListener('click', function(event) {
+                if (event.target === this) {
+                    this.classList.remove('active');
+                    this.style.display = 'none';
+                }
+            });
         });
     }
     
-    // Анимация элементов при прокрутке
-    window.addEventListener('scroll', function() {
-        const elements = document.querySelectorAll('.feature, .project-card, .profile');
-        
-        elements.forEach(el => {
-            const position = el.getBoundingClientRect();
-            
-            // Проверяем, виден ли элемент в viewport
-            if(position.top < window.innerHeight && position.bottom >= 0) {
-                el.classList.add('animate');
-            }
-        });
-    });
-    
-    // Проявление элементов страницы при загрузке
+    // Добавляем анимацию для элементов при загрузке страницы
     document.querySelectorAll('.card, .profile, .feature, .project-card').forEach((el, index) => {
         el.style.opacity = '0';
         setTimeout(() => {
             el.style.transition = 'opacity 0.7s ease-out';
             el.style.opacity = '1';
-        }, 100 + index * 100);
+        }, 100 + index * 50);
     });
     
-    // Интерактивные эффекты для карточек проектов
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.querySelectorAll('.btn').forEach(btn => {
-                btn.style.transform = 'translateY(-5px)';
-            });
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.querySelectorAll('.btn').forEach(btn => {
-                btn.style.transform = 'translateY(0)';
-            });
-        });
-    });
-    
-    // Инициализация анимаций при загрузке страницы
+    // Скрыть прелоадер
     setTimeout(() => {
-        window.dispatchEvent(new Event('scroll'));
-    }, 100);
+        const preloader = document.querySelector('.preloader');
+        if (preloader) {
+            preloader.classList.add('hidden');
+            document.body.classList.remove('loading');
+        }
+    }, 1000);
 }); 

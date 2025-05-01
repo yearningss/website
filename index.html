@@ -117,6 +117,14 @@
                                 <i class="fas fa-qrcode"></i> Создать QR-код
                             </a>
                         </div>
+                        
+                        <div class="project-card">
+                            <div class="project-title">Сократитель ссылок</div>
+                            <p>Простой и быстрый инструмент для сокращения длинных URL-адресов и создания удобных для обмена ссылок.</p>
+                            <a href="#" class="btn modal-open-btn" data-modal="url-shortener-modal">
+                                <i class="fas fa-link"></i> Сократить ссылку
+                            </a>
+                        </div>
                     </div>
                     
                     <div class="features">
@@ -208,6 +216,14 @@
                             <p>Multifunctional QR code generator with appearance customization and various code types.</p>
                             <a href="#" class="btn modal-open-btn" data-modal="qr-modal">
                                 <i class="fas fa-qrcode"></i> Create QR Code
+                            </a>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-title">URL Shortener</div>
+                            <p>Simple and fast tool for shortening long URLs and creating convenient links for sharing.</p>
+                            <a href="#" class="btn modal-open-btn" data-modal="url-shortener-modal">
+                                <i class="fas fa-link"></i> Shorten URL
                             </a>
                         </div>
                     </div>
@@ -560,9 +576,122 @@
     
     <!-- QRCode.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Модальное окно для сокращения ссылок -->
+    <div class="modal" id="url-shortener-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-lang-ru="Сократитель ссылок" data-lang-en="URL Shortener"></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="url-shortener-container">
+                    <form id="shortener-form">
+                    <div class="url-input-group">
+                        <label for="long-url" data-lang-ru="Длинная ссылка:" data-lang-en="Long URL:"></label>
+                        <div class="url-input-wrapper">
+                            <input type="url" id="long-url" class="url-input" data-lang-ru-placeholder="Вставьте длинную ссылку сюда..." data-lang-en-placeholder="Paste your long URL here...">
+                            <button id="clear-url-btn" class="clear-url-btn" title="Clear">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <select id="shortener-service" class="shortener-service-select">
+                            <option value="tinyurl" selected>TinyURL</option>
+                            <option value="bitly">Bit.ly</option>
+                            <option value="rebrandly">Rebrand.ly</option>
+                            <option value="custom" data-lang-ru="Пользовательский" data-lang-en="Custom">Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div id="api-key-container" class="api-key-container" style="display: none;">
+                        <label for="api-key" data-lang-ru="API ключ:" data-lang-en="API Key:"></label>
+                        <div class="api-key-input-wrapper">
+                            <input type="password" id="api-key" class="api-key-input">
+                            <button id="toggle-api-key" class="toggle-api-key">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="save-api-key-wrapper">
+                            <input type="checkbox" id="save-api-key">
+                            <label for="save-api-key" data-lang-ru="Сохранить API ключ" data-lang-en="Save API Key"></label>
+                        </div>
+                    </div>
+                    
+                    <div id="custom-domain-container" class="custom-domain-container" style="display: none;">
+                        <label for="custom-domain" data-lang-ru="Домен:" data-lang-en="Domain:"></label>
+                        <input type="text" id="custom-domain" class="custom-domain-input" data-lang-ru-placeholder="например, yourdomain.com" data-lang-en-placeholder="e.g., yourdomain.com">
+                    </div>
+                    
+                    <div class="shortener-options">
+                        <div class="option-group checkbox-group">
+                            <input type="checkbox" id="customize-url" class="checkbox-input">
+                            <label for="customize-url" data-lang-ru="Настроить короткую ссылку" data-lang-en="Customize short URL"></label>
+                        </div>
+                        
+                        <div id="custom-slug-container" class="custom-slug-container" style="display: none;">
+                            <label for="custom-slug" data-lang-ru="Свой вариант:" data-lang-en="Custom alias:"></label>
+                            <input type="text" id="custom-slug" class="custom-slug-input" data-lang-ru-placeholder="например, my-link" data-lang-en-placeholder="e.g., my-link">
+                            <p class="custom-slug-hint" data-lang-ru="Только буквы, цифры и дефисы" data-lang-en="Letters, numbers and hyphens only"></p>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="shorten-btn" class="btn primary-btn" data-lang-ru="Сократить ссылку" data-lang-en="Shorten URL">
+                        <i class="fas fa-link"></i> <span data-lang-ru="Сократить" data-lang-en="Shorten"></span>
+                    </button>
+                    </form>
+                    
+                    <div id="shortened-url-container" class="shortened-url-container" style="display: none;">
+                        <div class="result-header" data-lang-ru="Сокращенная ссылка:" data-lang-en="Shortened URL:"></div>
+                        <div class="shortened-url-wrapper">
+                            <input type="text" id="shortened-url" class="shortened-url" readonly>
+                            <div class="shortened-url-actions">
+                                <button id="copy-btn" class="copy-btn" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button id="open-btn" class="open-btn" title="Open">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                                <button id="qr-btn" class="qr-btn" title="QR Code">
+                                    <i class="fas fa-qrcode"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="copy-notification" id="short-url-copy-notification" data-lang-ru="Скопировано!" data-lang-en="Copied!"></div>
+                        
+                        <div id="short-url-qr-container" class="short-url-qr-container" style="display: none;">
+                            <div class="qr-header" data-lang-ru="QR-код для вашей короткой ссылки:" data-lang-en="QR Code for your short URL:"></div>
+                            <div id="short-url-qr-code" class="short-url-qr-code"></div>
+                            <button id="download-qr-code" class="btn secondary-btn" data-lang-ru="Скачать QR-код" data-lang-en="Download QR Code">
+                                <i class="fas fa-download"></i> <span data-lang-ru="Скачать" data-lang-en="Download"></span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="shortener-error" class="shortener-error" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="error-message"></span>
+                    </div>
+                    
+                    <div id="shortener-history-container" class="shortener-history-container">
+                        <div class="history-header">
+                            <h4 data-lang-ru="История сокращений" data-lang-en="Shortening History"></h4>
+                            <button id="clear-history" class="clear-history-btn" data-lang-ru="Очистить" data-lang-en="Clear">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <div id="shortener-history" class="shortener-history">
+                            <p class="no-history" data-lang-ru="История пуста" data-lang-en="No history yet"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
     <script src="fixed-password-generator.js"></script>
     <script src="qr-generator.js"></script>
+    <script src="url-shortener.js"></script>
 
     <!-- Скрипт для прелоадера -->
     <script>

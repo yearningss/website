@@ -10,7 +10,7 @@
       "down": "https://github.com/yearningss/yearnings-repo-IOS/releases/download/SwiftgramM/Swiftgram+.v11.13.ipa",
       "dev": "ZiSipa",
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Swiftgram.jpg",
-      "category": "Tweaked",
+      "category": "Tweaked Apps",
       "description": "Мод: призрак, твик TGExtra, снятие ограничений, оффлайн, без рекламы ВАЖНО - Что бы открыть настройки мода и активировать все функции, нажмите на нижнюю кнопку «Чаты💬» Для работы уведомлений - Гайд (https://t.me/ZiSipa_chat/1058544) ",
       "bundleID": "com.swiftgram.plus",
       "enableBackup": true
@@ -40,7 +40,7 @@
     {
       "name": "Null’s Brawl",
       "version": "62.258",
-      "down": "https://github.com/yearningss/yearnings-repo-IOS/releases/download/Null’s_Brawl/Null.s.Brawl.v62.258.ipa",
+      "down": "https://github.com/yearningss/yearnings-repo-IOS/releases/download/Nulls_Brawl/Null.s.Brawl.v62.258.ipa",
       "dev": "ZiSipa",
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Null’sBrawl.jpg",
       "category": "Hacked Games",
@@ -100,7 +100,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/YouTube.jpg",
       "category": "Tweaked Apps",
       "description": "❗️Модификации включаются в настройках (⚙️) -> YouTube Plus",
-      "bundleID": "com.YouTube.+",
+      "bundleID": "com.YouTube.be",
       "enableBackup": true
     },
 	{
@@ -148,7 +148,7 @@
       "enableBackup": true
     },
 		{
-      "name": "РЖД Пассажирам",
+      "name": "Совком_Банк",
       "version": "1.0",
       "down": "https://github.com/yearningss/yearnings-repo-IOS/releases/download/Совком_Банк/v1.0.ipa",
       "dev": "ZiSipa",
@@ -177,7 +177,29 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Я.Музыка.png",
       "category": "Tweaked Apps",
       "description": "💚Активирован Plus Доступна загрузка музыки в кэш (не скачивайте в ручную, музыка скачивается автоматически при прослушивании) ",
-      "bundleID": "com.T.Bank",
+      "bundleID": "com.Z.mzi",
+      "enableBackup": true
+    },
+		{
+      "name": "TikTok BH+",
+      "version": "v7.38",
+      "down": "https://github.com/yearningss/yearnings-repo-IOS/releases/download/TikTok_BH/TikTok.BH+.v34.7.1.ipa",
+      "dev": "ZiSipa",
+      "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/TikTok.png",
+      "category": "Tweaked Apps",
+      "description": "Старая версия, работает на iOS 26. ❗️Модификация открывается в настройках конфиденциальности, нужно выбрать вкладку (TikTokBH). Обязательно меняем регион, желательно выбрать 🇺🇸 или 🇧🇾.",
+      "bundleID": "com.TikTok.BH",
+      "enableBackup": true
+    },
+		{
+      "name": "st service",
+      "version": "v1.76.0",
+      "down": "https://github.com/yearningss/yearnings-repo-IOS/releases/download/ST_Service/ST.Service.1.76.0.ipa",
+      "dev": "yearnings",
+      "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/ST.png",
+      "category": "Tweaked Apps",
+      "description": "st service",
+      "bundleID": "com.stservice.app",
       "enableBackup": true
     },
   ]

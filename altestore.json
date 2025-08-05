@@ -7,14 +7,12 @@
       "bundleIdentifier": "com.stservice.app",
       "developerName": "yearnings",
       "version": "1.76.0",
-      "versionDate": "2025-08-05",
-      "versionDescription": "ST Service updated to v1.76.0",
+      "versionDate": "2025-08-05T00:00:00Z",
+      "size": 158105600,
       "downloadURL": "https://github.com/yearningss/yearnings-repo-IOS/releases/download/ST_Service/ST.Service.1.76.0.ipa",
       "iconURL": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/ST.png",
-      "tintColor": "007AFF",
-      "screenshotURLs": [],
       "localizedDescription": "st service",
-      "isFree": true
+      "tintColor": "007AFF"
     }
   ]
 }

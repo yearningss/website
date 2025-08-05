@@ -12,7 +12,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Swiftgram.jpg",
       "category": "Tweaked Apps",
       "description": "Мод: призрак, твик TGExtra, снятие ограничений, оффлайн, без рекламы ВАЖНО - Что бы открыть настройки мода и активировать все функции, нажмите на нижнюю кнопку «Чаты💬» Для работы уведомлений - Гайд (https://t.me/ZiSipa_chat/1058544) ",
-      "bundleID": "com.swiftgram.plus",
+      "bundleID": "app.swiftgram.ios",
       "enableBackup": true
     },
     {
@@ -23,7 +23,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/SuikaGame+.webp",
       "category": "Hacked Games",
       "description": "Экспортировано из Apple Arcade",
-      "bundleID": "com.suika.arcade",
+      "bundleID": "com.suikagame.arcade",
       "enableBackup": true
     },
     {
@@ -34,7 +34,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Subnautica.webp",
       "category": "Hacked Games",
       "description": "Стоимость в AppStore 899₽.",
-      "bundleID": "com.subnautica.plus",
+      "bundleID": "com.UnknownWorlds.Subnautica",
       "enableBackup": true
     },
     {
@@ -45,7 +45,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Null’sBrawl.jpg",
       "category": "Hacked Games",
       "description": "Мод: все бойцы и скины, неограниченные ресурсы",
-      "bundleID": "com.brawl.nulls",
+      "bundleID": "nt.nb.ios",
       "enableBackup": true
     },
     {
@@ -56,7 +56,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Nihilumbra.webp",
       "category": "Hacked Games",
       "description": "Стоимость в AppStore 249₽.",
-      "bundleID": "com.nihilumbra.ios",
+      "bundleID": "com.beautifungames.nihilumbra",
       "enableBackup": true
     },
     {
@@ -78,7 +78,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/KingdomRush5.webp",
       "category": "Hacked Games",
       "description": "Экспортировано из Apple Arcade",
-      "bundleID": "com.kingdom.rush5",
+      "bundleID": "com.ironhidegames.kingdomrush.alliance.universal.premium<",
       "enableBackup": true
     },
     {
@@ -89,7 +89,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/AngryBirdsStarWars.jpg",
       "category": "Hacked Games",
       "description": "Удалено из AppStore",
-      "bundleID": "com.angrybirds.starwars",
+      "bundleID": "com.rovio.angrybirdsstarwarsii",
       "enableBackup": true
     },
 	{
@@ -100,7 +100,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/YouTube.jpg",
       "category": "Tweaked Apps",
       "description": "❗️Модификации включаются в настройках (⚙️) -> YouTube Plus",
-      "bundleID": "com.YouTube.be",
+      "bundleID": "com.google.ios.youtube",
       "enableBackup": true
     },
 	{
@@ -111,7 +111,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Авито.jpg",
       "category": "Tweaked Apps",
       "description": "Удалено из AppStore",
-      "bundleID": "com.avito.avito",
+      "bundleID": "ru.avito.app",
       "enableBackup": true
     },
 		{
@@ -122,7 +122,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Альфа_Банк.jpg",
       "category": "Tweaked Apps",
       "description": "Удалён из 💙AppStore. под названием “Поровну” ",
-      "bundleID": "com.Alfa.Bank",
+      "bundleID": "com.splitactivities.app",
       "enableBackup": true
     },
 		{
@@ -133,7 +133,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Газпром_Банк.jpg",
       "category": "Tweaked Apps",
       "description": "Удалён из 💙AppStore. под названием “До Вершины“ ",
-      "bundleID": "com.Gazprom.Bank",
+      "bundleID": "ru.to.the.top.story.prod<",
       "enableBackup": true
     },
 		{
@@ -144,7 +144,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/YouTube.jpg",
       "category": "Tweaked Apps",
       "description": "Удалён из 💙AppStore.",
-      "bundleID": "com.RZD.Passengers",
+      "bundleID": "ru.dorogi20250625.passenger",
       "enableBackup": true
     },
 		{
@@ -155,7 +155,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Совком_Банк.png",
       "category": "Tweaked Apps",
       "description": "Удалён из 💙AppStore. под названием “Поровну” ",
-      "bundleID": "com.Sovcom.Bank",
+      "bundleID": "org.moneytrack",
       "enableBackup": true
     },
 		{
@@ -166,7 +166,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Т-Банк.png",
       "category": "Tweaked Apps",
       "description": "Удалён из 💙AppStore. под названием “Yellow T”",
-      "bundleID": "com.T.Bank",
+      "bundleID": "com.linked.scan.app",
       "enableBackup": true
     },
 		{
@@ -177,7 +177,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/Я.Музыка.png",
       "category": "Tweaked Apps",
       "description": "💚Активирован Plus Доступна загрузка музыки в кэш (не скачивайте в ручную, музыка скачивается автоматически при прослушивании) ",
-      "bundleID": "com.Z.mzi",
+      "bundleID": "ru.yandex.mobile.music",
       "enableBackup": true
     },
 		{
@@ -188,7 +188,7 @@
       "icon": "https://raw.githubusercontent.com/yearningss/yearnings-repo-IOS/main/ico/TikTok.png",
       "category": "Tweaked Apps",
       "description": "Старая версия, работает на iOS 26. ❗️Модификация открывается в настройках конфиденциальности, нужно выбрать вкладку (TikTokBH). Обязательно меняем регион, желательно выбрать 🇺🇸 или 🇧🇾.",
-      "bundleID": "com.TikTok.BH",
+      "bundleID": "com.zhiliaoapp.musically",
       "enableBackup": true
     },
 		{
